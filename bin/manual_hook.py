@@ -23,14 +23,15 @@ def auth(type = 'aliyun'):
 
         certbot_domain = os.environ['CERTBOT_DOMAIN']
         certbot_validation = os.environ['CERTBOT_VALIDATION']
-        certbot_acme_challenge = Config.get('base', 'acme_challenge')
 
         Logger.info('manual_hook#auth: Start to setting dns')
-        Logger.info('manual_hook#auth: ' + certbot_domain)
-        Logger.info('manual_hook#auth: ' + certbot_validation)
+        Logger.info('manual_hook#auth certbot_domain: ' + certbot_domain)
+        Logger.info('manual_hook#auth certbot_validation: ' + certbot_validation)
+
+        maindomain, acme_challenge = __extract_maindomain_and_challenge(certbot_domain)
 
         client = __get_api_client(type)
-        client.add_domain_record(certbot_domain, certbot_acme_challenge, certbot_validation)
+        client.add_domain_record(maindomain, acme_challenge, certbot_validation)
 
         Logger.info('manual_hook#auth: sleep 10 secs')
         time.sleep(10)
@@ -45,14 +46,15 @@ def cleanup(type = 'aliyun'):
         if 'CERTBOT_DOMAIN' not in os.environ:
             raise Exception('Environment variable CERTBOT_DOMAIN is empty.')
 
-        certbot_domain = os.environ['CERTBOT_DOMAIN']
-        certbot_acme_challenge = Config.get('base', 'acme_challenge')
+        certbot_domain = os.environ['CERTBOT_DUtlsOMAIN']
 
         Logger.info('manual_hook#cleanup: Start to cleanup dns')
         Logger.info('manual_hook#cleanup: ' + certbot_domain)
 
+        maindomain, acme_challenge = __extract_maindomain_and_challenge(certbot_domain)
+
         client = __get_api_client(type)
-        client.delete_domain_record(certbot_domain, certbot_acme_challenge)
+        client.delete_domain_record(maindomain, acme_challenge)
 
         Logger.info('manual_hook#cleanup: sleep 10 secs')
         time.sleep(10)
@@ -61,19 +63,6 @@ def cleanup(type = 'aliyun'):
     except Exception as e:
         Logger.error('manual_hook#cleanup raise Exception:' + str(e))
         sys.exit()
-
-def usage():
-    print('Usage: python %s [option] [arg] ...' % os.path.basename(__file__))
-    print('Options:')
-    Utils.print_opt(['-h', '--help'],
-             'Display help information.')
-    Utils.print_opt(['-a', '--auth'],
-             'auth hook.')
-    Utils.print_opt(['-c', '--cleanup'],
-             'cleanup hook.')
-    Utils.print_opt(['--api='],
-             'api type, default: aliyun')
-    print('Example: python %s --auth --api=aliyun' % os.path.basename(__file__))
 
 def __get_api_client(type = 'aliyun'):
     try:
@@ -90,6 +79,19 @@ def __get_alidns_client():
     access_key_secret = Config.get('aliyun', 'access_key_secret')
 
     return api.AliDns(access_key_id, access_key_secret)
+
+def __extract_maindomain_and_challenge(domain):
+    sudomain, maindomain = Utils.extract_domain(domain)
+
+    acme_challenge = Config.get('base', 'acme_challenge')
+
+    if sudomain:
+        acme_challenge += '.' + sudomain
+
+    Logger.info('manual_hook maindomain: ' + maindomain)
+    Logger.info('manual_hook acme_challenge: ' + acme_challenge)
+
+    return (maindomain, acme_challenge)
 
 def main():
     parser = argparse.ArgumentParser(description='example: python %s --auth --api aliyun' % os.path.basename(__file__))
