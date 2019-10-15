@@ -1,0 +1,10 @@
+log/*
+!/log/.keep
+
+.*~
+*~
+
+__pycache__
+*.pyc
+
+config.ini
