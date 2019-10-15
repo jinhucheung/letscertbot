@@ -2,6 +2,7 @@
 
 certbot certonly \
 --email hi.jinhu.zhang@gmail.com \
+--manual-public-ip-logging-ok \
 --agree-tos \
 --preferred-challenges dns \
 --server https://acme-v02.api.letsencrypt.org/directory \

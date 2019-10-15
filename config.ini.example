@@ -7,3 +7,8 @@ access_key_secret=your_access_key_secret
 [log]
 enable=True
 logfile=./log/application.log
+[domain]
+tld=[
+  'com',
+  'cn'
+  ]
