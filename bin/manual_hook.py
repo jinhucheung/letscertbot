@@ -12,24 +12,28 @@ if sys.version_info < (3,0):
 else:
     import configparser as ConfigParser
 
-current_path = os.path.split(os.path.realpath(__file__))[0]
+root_path = os.path.sep.join([os.path.split(os.path.realpath(__file__))[0], '..'])
 
 # load api, lib
-sys.path.append(os.path.sep.join([current_path, '..']))
+sys.path.append(root_path)
 import api
 
 # load configuration
-config_path = os.path.sep.join([current_path, '..', 'config.ini'])
+config_path = os.path.sep.join([root_path, 'config.ini'])
 config = ConfigParser.ConfigParser()
 config.read(config_path)
 
 # set logger
 logger = logging.getLogger('logger')
 if config.get('log', 'enable').lower() == 'true':
+    logfile = config.get('log', 'logfile')
+    if not logfile.startswith('/'):
+        logfile = os.path.sep.join([root_path, logfile])
+
     logging.basicConfig(
         format="%(asctime)s %(name)s %(levelname)s %(message)s",
         level=logging.DEBUG,
-        filename=config.get('log', 'logfile'),
+        filename=logfile,
         filemode='a'
     )
 
