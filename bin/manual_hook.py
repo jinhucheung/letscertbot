@@ -14,7 +14,7 @@ sys.path.append(root_path)
 import api
 from lib import Config, Logger, Utils
 
-def auth(type = 'aliyun'):
+def auth(api_type = 'aliyun'):
     try:
         if 'CERTBOT_DOMAIN' not in os.environ:
             raise Exception('Environment variable CERTBOT_DOMAIN is empty.')
@@ -30,7 +30,7 @@ def auth(type = 'aliyun'):
 
         maindomain, acme_challenge = __extract_maindomain_and_challenge(certbot_domain)
 
-        client = __get_api_client(type)
+        client = __get_api_client(api_type)
         client.add_domain_record(maindomain, acme_challenge, certbot_validation)
 
         Logger.info('manual_hook#auth: sleep 10 secs')
@@ -41,7 +41,7 @@ def auth(type = 'aliyun'):
         Logger.error('manual_hook#auth raise Exception:' + str(e))
         sys.exit()
 
-def cleanup(type = 'aliyun'):
+def cleanup(api_type = 'aliyun'):
     try:
         if 'CERTBOT_DOMAIN' not in os.environ:
             raise Exception('Environment variable CERTBOT_DOMAIN is empty.')
@@ -53,7 +53,7 @@ def cleanup(type = 'aliyun'):
 
         maindomain, acme_challenge = __extract_maindomain_and_challenge(certbot_domain)
 
-        client = __get_api_client(type)
+        client = __get_api_client(api_type)
         client.delete_domain_record(maindomain, acme_challenge)
 
         Logger.info('manual_hook#cleanup: sleep 10 secs')
@@ -64,26 +64,26 @@ def cleanup(type = 'aliyun'):
         Logger.error('manual_hook#cleanup raise Exception:' + str(e))
         sys.exit()
 
-def __get_api_client(type = 'aliyun'):
+def __get_api_client(api_type = 'aliyun'):
     try:
         switch = {
             'aliyun': __get_alidns_client
         }
-        return switch[type]()
+        return switch[api_type]()
     except KeyError as e:
         Logger.error('manual_hook#get_api raise KeyError: ' + str(e))
         raise SystemExit(e)
 
 def __get_alidns_client():
-    access_key_id = Config.get('aliyun', 'access_key_id')
-    access_key_secret = Config.get('aliyun', 'access_key_secret')
+    access_key_id = Config['api']['aliyun']['access_key_id']
+    access_key_secret = Config['api']['aliyun']['access_key_secret']
 
     return api.AliDns(access_key_id, access_key_secret)
 
 def __extract_maindomain_and_challenge(domain):
     sudomain, maindomain = Utils.extract_domain(domain)
 
-    acme_challenge = Config.get('base', 'acme_challenge')
+    acme_challenge = Config['base']['acme_challenge']
 
     if sudomain:
         acme_challenge += '.' + sudomain

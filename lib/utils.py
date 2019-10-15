@@ -24,7 +24,7 @@ def extract_domain(domain):
 
 
 if __name__ == '__main__':
-    _, *domains = sys.argv
+    domains = sys.argv[1:]
 
     print('(sudomain, maindomain)')
 

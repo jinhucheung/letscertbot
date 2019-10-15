@@ -1,9 +1,0 @@
-[base]
-acme_challenge=_acme-challenge
-certbot_email=your_email
-[aliyun]
-access_key_id=your_access_key_id
-access_key_secret=your_access_key_secret
-[log]
-enable=True
-logfile=./log/application.log

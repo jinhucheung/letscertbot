@@ -26,23 +26,23 @@ class AliDns:
         self.access_key_secret = access_key_secret
 
     # @example alidns.add_domain_record("example.com", "_acme-challenge", "123456", "TXT")
-    def add_domain_record(self, domain, rr, value, type = 'TXT'):
+    def add_domain_record(self, domain, rr, value, _type = 'TXT'):
         params = {
             'Action'     : 'AddDomainRecord',
             'DomainName' : domain,
             'RR'         : rr,
-            'Type'       : type,
+            'Type'       : _type,
             'Value'      : value
         }
         self.__request(params)
 
     # @example alidns.delete_domain_record("example.com", "_acme-challenge", "TXT")
-    def delete_domain_record(self, domain, rr, type = 'TXT'):
+    def delete_domain_record(self, domain, rr, _type = 'TXT'):
         params = {
             'Action'     : 'DeleteSubDomainRecords',
             'DomainName' : domain,
             'RR'         : rr,
-            'Type'       : type
+            'Type'       : _type
         }
         self.__request(params)
 
@@ -92,16 +92,16 @@ class AliDns:
         string_to_sign = 'GET&%2F&' + self.__percent_encode(query_string[1:])
         try:
             if sys.version_info < (3,0):
-                h = hmac.new(self.access_key_secret + "&", string_to_sign, hashlib.sha1)
+                digest = hmac.new(str(self.access_key_secret + "&"), str(string_to_sign), hashlib.sha1).digest()
             else:
-                h = hmac.new((self.access_key_secret + "&").encode(encoding="utf-8"), string_to_sign.encode(encoding="utf-8"), hashlib.sha1)
+                digest = hmac.new((self.access_key_secret + "&").encode(encoding="utf-8"), string_to_sign.encode(encoding="utf-8"), hashlib.sha1).digest()
         except Exception as e:
             logger.error(e)
 
         if sys.version_info < (3,1):
-            signature = base64.encodestring(h.digest()).strip()
+            signature = base64.encodestring(digest).strip()
         else:
-            signature = base64.encodebytes(h.digest()).strip()
+            signature = base64.encodebytes(digest).strip()
 
         return signature
 

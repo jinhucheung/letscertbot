@@ -8,7 +8,7 @@ import argparse
 root_path = os.path.sep.join([os.path.split(os.path.realpath(__file__))[0], '..'])
 
 sys.path.append(root_path)
-from lib import Config, Logger, Utils
+from lib import Logger
 
 manual_hook_path = os.path.sep.join([root_path, 'bin', 'manual_hook.py'])
 

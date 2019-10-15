@@ -8,9 +8,8 @@ import argparse
 root_path = os.path.sep.join([os.path.split(os.path.realpath(__file__))[0], '..'])
 
 sys.path.append(root_path)
-from lib import Config, Logger, Utils
+from lib import Config, Logger
 
-certbot_email = Config.get('base', 'certbot_email')
 manual_hook_path = os.path.sep.join([root_path, 'bin', 'manual_hook.py'])
 
 certbot_cmd_template = '''
@@ -33,7 +32,7 @@ def run(args):
     Logger.info('obtain domains: ' + domains)
 
     certbot_cmd = certbot_cmd_template % {
-        'email': Config.get('base', 'certbot_email'),
+        'email': Config['base']['certbot_email'],
         'manual_hook_path': manual_hook_path,
         'domains': domains
     }
