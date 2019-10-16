@@ -46,7 +46,7 @@ def cleanup(api_type = 'aliyun'):
         if 'CERTBOT_DOMAIN' not in os.environ:
             raise Exception('Environment variable CERTBOT_DOMAIN is empty.')
 
-        certbot_domain = os.environ['CERTBOT_DUtlsOMAIN']
+        certbot_domain = os.environ['CERTBOT_DOMAIN']
 
         Logger.info('manual_hook#cleanup: Start to cleanup dns')
         Logger.info('manual_hook#cleanup: ' + certbot_domain)
@@ -83,7 +83,7 @@ def __get_alidns_client():
 def __extract_maindomain_and_challenge(domain):
     sudomain, maindomain = Utils.extract_domain(domain)
 
-    acme_challenge = Config['base']['acme_challenge']
+    acme_challenge = '_acme-challenge'
 
     if sudomain:
         acme_challenge += '.' + sudomain

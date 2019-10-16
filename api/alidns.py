@@ -53,7 +53,7 @@ class AliDns:
         url = self.__compose_url(params)
         request = urllib2.Request(url)
         try:
-            f = urllib2.urlopen(request)
+            f = urllib2.urlopen(request, timeout=45)
             response = f.read().decode('utf-8')
             logger.info(response)
         except urllib2.HTTPError as e:

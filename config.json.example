@@ -1,7 +1,6 @@
 {
   "base": {
-    "acme_challenge": "_acme-challenge",
-    "certbot_email": "your_email"
+    "email": "your_email"
   },
   "api": {
     "aliyun": {
@@ -12,5 +11,19 @@
   "log": {
     "enable": true,
     "logfile": "./log/application.log"
+  },
+  "deploy": {
+    "enable": false,
+    "restart_nginx": false,
+    "keep_backups": 2,
+    "servers": [
+      {
+        "host": "192.168.1.1",
+        "port": 22,
+        "user": "root",
+        "password": "",
+        "deploy_to": "/etc/letsencrypt/live"
+      }
+    ]
   }
 }
