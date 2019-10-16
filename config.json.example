@@ -9,7 +9,7 @@
     }
   },
   "log": {
-    "enable": true,
+    "enable": false,
     "logfile": "./log/application.log"
   },
   "deploy": {

@@ -4,7 +4,6 @@
 import sys
 import os
 import time
-import getopt
 import argparse
 
 root_path = os.path.sep.join([os.path.split(os.path.realpath(__file__))[0], '..'])

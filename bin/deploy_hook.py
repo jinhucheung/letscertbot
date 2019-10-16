@@ -3,7 +3,7 @@
 
 import os
 import sys
-import time
+import argparse
 
 root_path = os.path.sep.join([os.path.split(os.path.realpath(__file__))[0], '..'])
 
@@ -107,6 +107,8 @@ deploy_script_template = '''
 
 def run():
     try:
+        Logger.info('deploy_hook#run deploy')
+
         if not Config['deploy']['enable']:
             raise Exception('deploy setting is disabled in config file')
 
@@ -159,7 +161,27 @@ def build_script(server):
 def _escape(string):
     return str(string).replace("'", "\\'").replace('"', '\\"').replace(' ', '\\ ')
 
-if __name__ == '__main__':
-    Logger.info('deploy hook')
+def main():
+    parser = argparse.ArgumentParser(description='example: python %s --check' % os.path.basename(__file__))
+
+    parser.add_argument('-c', '--check', help='check deploy script', action='store_true')
+
+    args = parser.parse_args()
+
+    if args.check:
+        print(deploy_script_template % {
+                'restart_nginx': True,
+                'keep_backups': 2,
+                'cert_path': '/etc/letsencrypt/live/your_domain.com',
+                'host': '192.168.1.1',
+                'port': 22,
+                'user': 'root',
+                'password': 'root',
+                'deploy_to': '/etc/letsencrypt/live'
+            })
+        sys.exit()
+
     run()
-    Logger.info('deployed hook')
+
+if __name__ == '__main__':
+    main()
