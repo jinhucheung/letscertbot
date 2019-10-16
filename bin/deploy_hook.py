@@ -58,8 +58,8 @@ deploy_script_template = '''
     success "Copyed cert files to $server:$tmp_dir"
 
     info "Cleaning up old backup cert in server:"
-    run_remote "exit $(ls $backup_path 2>/dev/null | wc -l)"
-    if [ "$?" -ge "$keep_backups" ]; then
+    run_remote "ls $backup_path 2>/dev/null | wc -l | xargs -I {} [ {} -ge $keep_backups ] && exit 1 || exit 0"
+    if [ "$?" -ge 1 ]; then
         run_remote "ls $backup_path -t | tail -1 | xargs -I {} rm -r \"$backup_path/{}\""
         success "Cleaned up old backup cert in $server"
     else
