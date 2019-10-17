@@ -13,7 +13,7 @@ from lib import Config, Logger
 
 script_template = '''
     # define variables
-    ssh_options="-o LogLevel=ERROR -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+    ssh_options="-o LogLevel=ERROR -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
     timestamp=$(date +%%Y%%m%%d%%H%%M%%S)
     tmp_dir="/tmp/letscertbot-$timestamp"
     cert_name=$(basename '%(cert_path)s')
@@ -32,7 +32,10 @@ script_template = '''
         cmd="$1"
         use_ssh=${2:-1}
 
-        [ $use_ssh -eq 1 ] && cmd="ssh $ssh_options -p %(port)s $server '$cmd'"
+        if [ $use_ssh -eq 1 ]; then
+            [ -n "%(password)s" ] || ssh_options="$ssh_options -o BatchMode=yes"
+            cmd="ssh $ssh_options -p %(port)s $server '$cmd'"
+        fi
         [ -n "%(password)s" ] && cmd="sshpass -p %(password)s $cmd"
 
         alert "$cmd"
@@ -179,7 +182,6 @@ def push(cert_name, server_host):
         script = build_script(server, cert_path)
 
         print('deploy#push start to run script:')
-        print(script)
 
         os.system(script)
 
