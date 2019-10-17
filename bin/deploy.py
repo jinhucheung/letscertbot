@@ -47,21 +47,24 @@ script_template = '''
 
     info "Trying connect to server by ssh:"
     run_remote "exit 0"
-    [ $? -ne 0 ] && error "ssh connect failed to server $server"
+    [ $? -ne 0 ] && error "ssh connect to server $server failed"
     success "Connected to $server"
 
     info "Creating tmp directory in server:"
     run_remote "mkdir -p $tmp_dir"
+    [ $? -ne 0 ] && error "mkdir $tmp_dir in $server failed"
     success "Created tmp directory in $server"
 
-    info "Copying cert files to server:"
+    info "Pushing cert files to server:"
     run_remote "scp -o LogLevel=ERROR -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P %(port)s -r '%(cert_path)s' $server:$tmp_dir" 0
-    success "Copyed cert files to $server:$tmp_dir"
+    [ $? -ne 0 ] && error "scp '%(cert_path)s' to $server:$tmp_dir failed"
+    success "Pushed cert files to $server:$tmp_dir"
 
     info "Cleaning up old backup cert in server:"
-    run_remote "ls $backup_path 2>/dev/null | wc -l | xargs -I {} [ {} -ge $keep_backups ] && exit 1 || exit 0"
-    if [ "$?" -ge 1 ]; then
+    run_remote "[ -d $backup_path ] && ls $backup_path 2>/dev/null | wc -l | xargs -I {} [ {} -ge $keep_backups ] && exit 0 || exit 1"
+    if [ "$?" -eq 0 ]; then
         run_remote "ls $backup_path -t | tail -1 | xargs -I {} rm -r \"$backup_path/{}\""
+        [ $? -ne 0 ] && error "scp '%(cert_path)s' to $server:$tmp_dir failed"
         success "Cleaned up old backup cert in $server"
     else
         info "It is not need to clean up beacause current backup size less than $keep_backups"
@@ -69,18 +72,27 @@ script_template = '''
 
     info "Backuping used cert in server:"
     run_remote "mkdir -p $backup_path"
-    run_remote "[ -d \"$deploy_path\" ] && mv \"$deploy_path\" \"$backup_path/$timestamp\""
-    success "Backuped cert into $backup_path in $server"
+    [ $? -ne 0 ] && error "mkdir $backup_path in $server failed"
+    run_remote "[ -d \"$deploy_path\" ]"
+    if [ $? -eq 0 ]; then
+        run_remote "mv \"$deploy_path\" \"$backup_path/$timestamp\""
+        [ $? -ne 0 ] && error "move \"$deploy_path\" to \"$backup_path/$timestamp\" in $server failed"
+        success "Backuped cert into $backup_path in $server"
+    else
+        info "\"$deploy_path\" is not found, not need to backup"
+    fi
 
     info "Moving new cert to deploy directory in server:"
     run_remote "mv \"$tmp_dir/$cert_name\" \"$deploy_path\""
+    [ $? -ne 0 ] && error "move \"$tmp_dir/$cert_name\" to \"$deploy_path\" in $server failed"
     success "Moved new cert to $deploy_path in $server"
 
     info "Removing tmp directory in server:"
     run_remote "rm -r \"$tmp_dir\""
-    success "Moved new cert to $tmp_dir incert_root_pathver"
+    [ $? -ne 0 ] && error "remove \"$tmp_dir\" in $server failed"
+    success "Moved new cert to $tmp_dir in $server"
 
-    if [ "%(restart_nginx)i" -gt 0 ]; thencert_root_path
+    if [ "%(restart_nginx)i" -gt 0 ]; then
         info "Trying restart nginx in server:"
 
         info "Checking if nginx is installed:"
@@ -94,12 +106,15 @@ script_template = '''
         run_remote "command -v systemctl > /dev/null"
         if [ $? -eq 0 ]; then
             run_remote "systemctl reload nginx"
+            [ $? -ne 0 ] && error "restart nginx by 'systemctl reload nginx' in $server failed"
         else
             run_remote "command -v service > /dev/null"
             if [ $? -eq 0 ]; then
                 run_remote "service reload nginx"
+                [ $? -ne 0 ] && error "restart nginx by 'service reload nginx' in $server failed"
             else
                 run_remote "nginx -s reload"
+                [ $? -ne 0 ] && error "nginx -s reload' in $server failed"
             fi
         fi
         success "Restarted nginx in $server"
