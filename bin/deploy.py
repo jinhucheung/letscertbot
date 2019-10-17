@@ -45,7 +45,7 @@ script_template = '''
     # check sshpass if it is password mode
     if [ -n "%(password)s" ]; then
         alert "Checking if sshpass is installed:"
-        [ "$(command -v sshpass)" ] || error "sshpass is not installed"
+        [ "$(command -v sshpass)" ] || error "sshpass is not installed. In order to connect deployment server, you need to install sshpass"
         success "sshpass has been installed"
     fi
 
@@ -129,7 +129,7 @@ def run():
     try:
         Logger.info('deploy#run deploy')
 
-        if not Config['deploy']['enable']:
+        if not ('enable' in Config['deploy'] and Config['deploy']['enable']):
             raise Exception('deploy setting is disabled in config file')
 
         if 'RENEWED_LINEAGE' not in os.environ:
@@ -191,6 +191,7 @@ def push(cert_name, server_host):
 
 def build_script(server, cert_path = None):
     keep_backups = Config['deploy']['keep_backups'] if 'keep_backups' in Config['deploy'] and Config['deploy']['keep_backups'] else 2
+    user = server['user'] if 'user' in server and server['user'] else 'root'
     password = server['password'] if 'password' in server else ''
     port = server['port'] if 'port' in server and server['port'] else 22
     deploy_to = server['deploy_to'] if 'deploy_to' in server and server['deploy_to'] else certs_root_path
@@ -202,7 +203,7 @@ def build_script(server, cert_path = None):
             'cert_path': _escape(cert_path or os.environ['RENEWED_LINEAGE']),
             'host': _escape(server['host']),
             'port': _escape(port),
-            'user': _escape(server['user']),
+            'user': _escape(user),
             'password': _escape(password),
             "deploy_to": _escape(deploy_to),
         }

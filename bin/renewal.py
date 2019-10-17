@@ -34,7 +34,7 @@ def run(args):
 
     force_renewal = '--force-renewal' if args.force else ''
 
-    deploy_hook = '--deploy-hook "python ' + deploy_path + '"' if Config['deploy']['enable'] else ''
+    deploy_hook = '--deploy-hook "python ' + deploy_path + '"' if 'enable' in Config['deploy'] and Config['deploy']['enable'] else ''
 
     certbot_cmd = certbot_cmd_template % {
         'manual_path': manual_path,

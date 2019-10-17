@@ -45,6 +45,50 @@ $ cp config.json.example config.json
 
 ### Configuration
 
+Before running Let's Certbot, you have the following configuration to change:
+
+| Name                         | Required | Description                                               | Default               |
+| ---------------------------- | -------- | --------------------------------------------------------- | --------------------- |
+| base.email                   | true     | Email address for important renewal notifications         |                       |
+| api.aliyun.access_key_id     | true     | AccessKey ID of Aliyun account                            |                       |
+| api.aliyun.access_key_secret | true     | AccessKey Secret of Aliyun account                        |                       |
+| log.enable                   | false    | Whether to enable log tracker                             | false                 |
+| log.logfile                  | false    | The path of log file                                      | ./log/application.log |
+| deploy.enable                | false    | Whether to run deployment script                          | false                 |
+| deploy.keep_backups          | false    | The last n releases are kept for backups                  | 2                     |
+| deploy.servers               | false    | The deployment servers                                    |                       |
+| deploy.server.host           | false    | The host of deployment server, required on deploy         |                       |
+| deploy.server.port           | false    | The port of deployment server SSH daemon                  | 22                    |
+| deploy.server.user           | false    | The user of deployment server uses SSH login, run command | root                  |
+| deploy.server.password       | false    | The password of deployment user                           |                       |
+| deploy.server.deploy_to      | false    | The stored path of certificate                            | /etc/letsencrypt/live |
+| deploy.server.nginx          | false    | The nginx settings of deploy server                       |                       |
+| deploy.server.nginx.restart  | false    | Whether to restart nginx                                  | false                 |
+
+### Obtains
+
+### Renewal
+
+### Deployment
+
+Let's Certbot deploys certificate via SSH, it means that local server runs Certbot must be able to connect deployment server. In order to connect, you need to **add the public key** of local server to deployment server or **provide `deploy.server.password` for `sshpass`**.
+
+In order to add certificate to `deploy.server.deploy_to` or restart nginx, Let's Certbot requires `deploy.server.user` has permissions.
+
+You can get deployment script by running the following command:
+
+```
+$ sudo python ./bin/deploy.py --check
+```
+
+And push certificate to server:
+
+```
+$ sudo python ./bin/deploy.py --push --cert $certificate_name --server $server_host
+```
+
+If you set `deploy.enable` to true, Certbot will run above deployment script on deploy hook. `deploy.py` receives renewed certificate and push it to configured servers. see [more](https://certbot.eff.org/docs/using.html#renewing-certificates)
+
 ## Thanks
 
 - [Certbot](https://github.com/certbot/certbot)

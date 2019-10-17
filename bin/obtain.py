@@ -36,7 +36,7 @@ def run(args):
 
     Logger.info('obtain domains: ' + domains)
 
-    deploy_hook = '--deploy-hook "python ' + deploy_path + '"' if Config['deploy']['enable'] else ''
+    deploy_hook = '--deploy-hook "python ' + deploy_path + '"' if 'enable' in Config['deploy'] and Config['deploy']['enable'] else ''
     cert_name = '--cert-name ' + args.cert if args.cert else ''
     force_renewal = '--force-renewal' if args.force else ''
 
