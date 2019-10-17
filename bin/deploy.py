@@ -14,7 +14,7 @@ from lib import Config, Logger
 script_template = '''
     # define variables
     ssh_options="-o LogLevel=ERROR -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-    timestamp=$(date +%%+4Y%%m%%d%%H%%M%%S)
+    timestamp=$(date +%%Y%%m%%d%%H%%M%%S)
     tmp_dir="/tmp/letscertbot-$timestamp"
     cert_name=$(basename '%(cert_path)s')
 
