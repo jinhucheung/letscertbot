@@ -23,21 +23,21 @@ def auth(api_type = 'aliyun'):
         certbot_domain = os.environ['CERTBOT_DOMAIN']
         certbot_validation = os.environ['CERTBOT_VALIDATION']
 
-        Logger.info('manual_hook#auth: Start to setting dns')
-        Logger.info('manual_hook#auth certbot_domain: ' + certbot_domain)
-        Logger.info('manual_hook#auth certbot_validation: ' + certbot_validation)
+        Logger.info('manual#auth: Start to setting dns')
+        Logger.info('manual#auth certbot_domain: ' + certbot_domain)
+        Logger.info('manual#auth certbot_validation: ' + certbot_validation)
 
         maindomain, acme_challenge = __extract_maindomain_and_challenge(certbot_domain)
 
         client = __get_api_client(api_type)
         client.add_domain_record(maindomain, acme_challenge, certbot_validation)
 
-        Logger.info('manual_hook#auth: sleep 10 secs')
+        Logger.info('manual#auth: sleep 10 secs')
         time.sleep(10)
 
-        Logger.info('manual_hook#auth: Success.')
+        Logger.info('manual#auth: Success.')
     except Exception as e:
-        Logger.error('manual_hook#auth raise Exception:' + str(e))
+        Logger.error('manual#auth raise Exception:' + str(e))
         sys.exit()
 
 def cleanup(api_type = 'aliyun'):
@@ -47,20 +47,20 @@ def cleanup(api_type = 'aliyun'):
 
         certbot_domain = os.environ['CERTBOT_DOMAIN']
 
-        Logger.info('manual_hook#cleanup: Start to cleanup dns')
-        Logger.info('manual_hook#cleanup: ' + certbot_domain)
+        Logger.info('manual#cleanup: Start to cleanup dns')
+        Logger.info('manual#cleanup: ' + certbot_domain)
 
         maindomain, acme_challenge = __extract_maindomain_and_challenge(certbot_domain)
 
         client = __get_api_client(api_type)
         client.delete_domain_record(maindomain, acme_challenge)
 
-        Logger.info('manual_hook#cleanup: sleep 10 secs')
+        Logger.info('manual#cleanup: sleep 10 secs')
         time.sleep(10)
 
-        Logger.info('manual_hook#cleanup: Success.')
+        Logger.info('manual#cleanup: Success.')
     except Exception as e:
-        Logger.error('manual_hook#cleanup raise Exception:' + str(e))
+        Logger.error('manual#cleanup raise Exception:' + str(e))
         sys.exit()
 
 def __get_api_client(api_type = 'aliyun'):
@@ -70,7 +70,7 @@ def __get_api_client(api_type = 'aliyun'):
         }
         return switch[api_type]()
     except KeyError as e:
-        Logger.error('manual_hook#get_api raise KeyError: ' + str(e))
+        Logger.error('manual#get_api raise KeyError: ' + str(e))
         raise SystemExit(e)
 
 def __get_alidns_client():

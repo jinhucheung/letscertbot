@@ -6,11 +6,12 @@ import sys
 import argparse
 
 root_path = os.path.sep.join([os.path.split(os.path.realpath(__file__))[0], '..'])
+certs_root_path = '/etc/letsencrypt/live'
 
 sys.path.append(root_path)
 from lib import Config, Logger
 
-deploy_script_template = '''
+script_template = '''
     # define variables
     timestamp=$(date +%%+4Y%%m%%d%%H%%M%%S)
     tmp_dir="/tmp/letscertbot-$timestamp"
@@ -77,24 +78,24 @@ deploy_script_template = '''
 
     info "Removing tmp directory in server:"
     run_remote "rm -r \"$tmp_dir\""
-    success "Moved new cert to $tmp_dir in $server"
+    success "Moved new cert to $tmp_dir incert_root_pathver"
 
-    if [ "%(restart_nginx)i" -gt 0 ]; then
+    if [ "%(restart_nginx)i" -gt 0 ]; thencert_root_path
         info "Trying restart nginx in server:"
 
         info "Checking if nginx is installed:"
-        run_remote "command -v nginx"
+        run_remote "command -v nginx > /dev/null"
         [ $? -ne 0 ] && error "nginx is not found, add nginx to PATH environment if nginx is installed"
 
         info "Checking nginx configuration file:"
         run_remote "nginx -t 2> /dev/null"
         [ $? -ne 0 ] && error "nginx configuration file test failed in $server"
 
-        run_remote "command -v systemctl"
+        run_remote "command -v systemctl > /dev/null"
         if [ $? -eq 0 ]; then
             run_remote "systemctl reload nginx"
         else
-            run_remote "command -v service"
+            run_remote "command -v service > /dev/null"
             if [ $? -eq 0 ]; then
                 run_remote "service reload nginx"
             else
@@ -107,7 +108,7 @@ deploy_script_template = '''
 
 def run():
     try:
-        Logger.info('deploy_hook#run deploy')
+        Logger.info('deploy#run deploy')
 
         if not Config['deploy']['enable']:
             raise Exception('deploy setting is disabled in config file')
@@ -117,14 +118,14 @@ def run():
         if 'RENEWED_DOMAINS' not in os.environ:
             raise Exception('Environment variable RENEWED_DOMAINS is empty.')
 
-        Logger.info('deploy_hook#run start to deploy cert: ' + os.environ['RENEWED_LINEAGE'])
-        Logger.info('deploy_hook#run deploy domains: ' + os.environ['RENEWED_DOMAINS'])
+        Logger.info('deploy#run start to deploy cert: ' + os.environ['RENEWED_LINEAGE'])
+        Logger.info('deploy#run deploy domains: ' + os.environ['RENEWED_DOMAINS'])
 
         deploy()
 
-        Logger.info('deploy_hook#run deployed cert')
+        Logger.info('deploy#run deployed cert')
     except Exception as e:
-        Logger.error('deploy_hook#run raise Exception:' + str(e))
+        Logger.error('deploy#run raise Exception:' + str(e))
 
 def deploy():
     try:
@@ -134,23 +135,53 @@ def deploy():
             raise Exception('deploy servers is empty in config file')
 
         for server in servers:
-            deploy_script = build_script(server)
+            script = build_script(server)
 
-            os.system(deploy_script)
+            os.system(script)
     except Exception as e:
-        Logger.error('deploy_hook#deploy raise Exception:' + str(e))
+        Logger.error('deploy#deploy raise Exception:' + str(e))
 
-def build_script(server):
-    restart_nginx = Config['deploy']['restart_nginx'] if 'restart_nginx' in Config['deploy'] else False
-    keep_backups = Config['deploy']['keep_backups'] if ('keep_backups' in Config['deploy']) and Config['deploy']['keep_backups'] else 2
+def check(cert_name, server_host):
+    cert_path = os.path.sep.join([certs_root_path, cert_name or 'your_domain.com'])
+    server = next((x for x in Config['deploy']['servers'] if x['host'] == server_host), {
+        'host': server_host,
+        'user': 'root'
+    })
+
+    script = build_script(server, cert_path)
+
+    print(script)
+
+def push(cert_name, server_host):
+    try:
+        cert_path = os.path.sep.join([certs_root_path, cert_name])
+        server = next((x for x in Config['deploy']['servers'] if x['host'] == server_host), None)
+
+        if server is None:
+            raise Exception('Server host: ' + server_host + 'is not found in config.json')
+
+        script = build_script(server, cert_path)
+
+        print('deploy#push start to run script:')
+        print(script)
+
+        os.system(script)
+
+        print('deploy#push end script')
+    except Exception as e:
+        print("deploy#push raise Exception: " + str(e))
+
+def build_script(server, cert_path = None):
+    keep_backups = Config['deploy']['keep_backups'] if 'keep_backups' in Config['deploy'] and Config['deploy']['keep_backups'] else 2
     password = server['password'] if 'password' in server else ''
-    port = server['port'] if ('port' in server) and server['port'] else 22
-    deploy_to = server['deploy_to'] if ('deploy_to' in server) and server['deploy_to'] else '/etc/letsencrypt/live'
+    port = server['port'] if 'port' in server and server['port'] else 22
+    deploy_to = server['deploy_to'] if 'deploy_to' in server and server['deploy_to'] else certs_root_path
+    restart_nginx = server['nginx']['restart'] if 'nginx' in server and 'restart' in server['nginx'] else False
 
-    return deploy_script_template % {
+    return script_template % {
             'restart_nginx': restart_nginx,
             'keep_backups': keep_backups,
-            'cert_path': _escape(os.environ['RENEWED_LINEAGE']),
+            'cert_path': _escape(cert_path or os.environ['RENEWED_LINEAGE']),
             'host': _escape(server['host']),
             'port': _escape(port),
             'user': _escape(server['user']),
@@ -165,21 +196,18 @@ def main():
     parser = argparse.ArgumentParser(description='example: python %s --check' % os.path.basename(__file__))
 
     parser.add_argument('-c', '--check', help='check deploy script', action='store_true')
+    parser.add_argument('-p', '--push', help='push certificate to server', action='store_true')
+    parser.add_argument('--cert', help='certificate name')
+    parser.add_argument('--server', help='server host')
 
     args = parser.parse_args()
 
     if args.check:
-        print(deploy_script_template % {
-                'restart_nginx': True,
-                'keep_backups': 2,
-                'cert_path': '/etc/letsencrypt/live/your_domain.com',
-                'host': '192.168.1.1',
-                'port': 22,
-                'user': 'root',
-                'password': 'root',
-                'deploy_to': '/etc/letsencrypt/live'
-            })
-        sys.exit()
+        return check(args.cert, args.server)
+    elif args.push:
+        if args.cert is None or args.server is None:
+            parser.error('-p, --push require --cert and --server.')
+        return push(args.cert, args.server)
 
     run()
 

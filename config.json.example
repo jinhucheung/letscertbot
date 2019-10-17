@@ -14,7 +14,6 @@
   },
   "deploy": {
     "enable": false,
-    "restart_nginx": false,
     "keep_backups": 2,
     "servers": [
       {
@@ -22,7 +21,10 @@
         "port": 22,
         "user": "root",
         "password": "",
-        "deploy_to": "/etc/letsencrypt/live"
+        "deploy_to": "/etc/letsencrypt/live",
+        "nginx": {
+          "restart": false
+        }
       }
     ]
   }

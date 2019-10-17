@@ -10,8 +10,8 @@ root_path = os.path.sep.join([os.path.split(os.path.realpath(__file__))[0], '..'
 sys.path.append(root_path)
 from lib import Config, Logger
 
-manual_hook_path = os.path.sep.join([root_path, 'bin', 'manual_hook.py'])
-deploy_hook_path = os.path.sep.join([root_path, 'bin', 'deploy_hook.py'])
+manual_path = os.path.sep.join([root_path, 'bin', 'manual.py'])
+deploy_path = os.path.sep.join([root_path, 'bin', 'deploy.py'])
 
 certbot_cmd_template = '''
     certbot certonly \
@@ -24,8 +24,8 @@ certbot_cmd_template = '''
     --server https://acme-v02.api.letsencrypt.org/directory \
     --manual \
     --manual-public-ip-logging-ok \
-    --manual-auth-hook "python %(manual_hook_path)s --auth" \
-    --manual-cleanup-hook "python %(manual_hook_path)s --cleanup" \
+    --manual-auth-hook "python %(manual_path)s --auth" \
+    --manual-cleanup-hook "python %(manual_path)s --cleanup" \
     %(deploy_hook)s \
     %(domains)s
 '''
@@ -36,7 +36,7 @@ def run(args):
 
     Logger.info('obtain domains: ' + domains)
 
-    deploy_hook = '--deploy-hook "python ' + deploy_hook_path + '"' if Config['deploy']['enable'] else ''
+    deploy_hook = '--deploy-hook "python ' + deploy_path + '"' if Config['deploy']['enable'] else ''
     cert_name = '--cert-name ' + args.cert if args.cert else ''
     force_renewal = '--force-renewal' if args.force else ''
 
@@ -44,7 +44,7 @@ def run(args):
         'email': Config['base']['email'],
         'cert_name': cert_name,
         'force_renewal': force_renewal,
-        'manual_hook_path': manual_hook_path,
+        'manual_path': manual_path,
         'deploy_hook': deploy_hook,
         'domains': domains
     }

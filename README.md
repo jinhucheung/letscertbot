@@ -1,6 +1,27 @@
 # Let's Certbot
 
-[Certbot](https://certbot.eff.org/) 是 [Let's Encrypt](https://letsencrypt.org/) 官方推荐的自动签发 SSL 免费证书工具。
+[中文文档 Chinese document](/README-CN.md)
+
+Let's Certbot is a automation tool base on [Certbot](https://certbot.eff.org/) for obtains, renews, deploys SSL certificates.
+
+## Installation
+
+## Usage
+
+## Contributing
+
+Bug report or pull request are welcome.
+
+1. Fork it
+2. Create your feature branch (git checkout -b my-new-feature)
+3. Commit your changes (git commit -am 'Add some feature')
+4. Push to the branch (git push origin my-new-feature)
+
+Please write unit test with your code if necessary.
+
+## License
+
+The repository is available as open source under the terms of the [MIT License](MIT-LICENSE).
 
 ## 安装 Certbot
 
