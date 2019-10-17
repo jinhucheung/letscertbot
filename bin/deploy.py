@@ -13,6 +13,7 @@ from lib import Config, Logger
 
 script_template = '''
     # define variables
+    ssh_options="-o LogLevel=ERROR -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
     timestamp=$(date +%%+4Y%%m%%d%%H%%M%%S)
     tmp_dir="/tmp/letscertbot-$timestamp"
     cert_name=$(basename '%(cert_path)s')
@@ -31,7 +32,7 @@ script_template = '''
         cmd="$1"
         use_ssh=${2:-1}
 
-        [ $use_ssh -eq 1 ] && cmd="ssh -p %(port)s $server '$cmd'"
+        [ $use_ssh -eq 1 ] && cmd="ssh $ssh_options -p %(port)s $server '$cmd'"
         [ -n "%(password)s" ] && cmd="sshpass -p %(password)s $cmd"
 
         alert "$cmd"
@@ -56,7 +57,7 @@ script_template = '''
     success "Created tmp directory in $server"
 
     alert "Pushing cert files to server:"
-    run_remote "scp -o LogLevel=ERROR -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P %(port)s -r '%(cert_path)s' $server:$tmp_dir" 0
+    run_remote "scp $ssh_options -P %(port)s -r '%(cert_path)s' $server:$tmp_dir" 0
     [ $? -ne 0 ] && error "scp '%(cert_path)s' to $server:$tmp_dir failed"
     success "Pushed cert files to $server:$tmp_dir"
 
