@@ -23,7 +23,7 @@ script_template = '''
     keep_backups=%(keep_backups)s
 
     # define function
-    info () { echo "Info: $1"; }
+    alert () { echo "Info: $1"; }
     success () { echo "\033[0;32mSuccess: $1\033[0m"; }
     error () { echo "\033[0;31mError: $1\033[0m" >&2; exit 1; }
 
@@ -34,43 +34,43 @@ script_template = '''
         [ $use_ssh -eq 1 ] && cmd="ssh -p %(port)s $server '$cmd'"
         [ -n "%(password)s" ] && cmd="sshpass -p %(password)s $cmd"
 
-        info "$cmd"
+        alert "$cmd"
         eval $cmd
     }
 
     # check sshpass if it is password mode
     if [ -n "%(password)s" ]; then
-        info "Checking if sshpass is installed:"
+        alert "Checking if sshpass is installed:"
         [ "$(command -v sshpass)" ] || error "sshpass is not installed"
         success "sshpass has been installed"
     fi
 
-    info "Trying connect to server by ssh:"
+    alert "Trying connect to server by ssh:"
     run_remote "exit 0"
     [ $? -ne 0 ] && error "ssh connect to server $server failed"
     success "Connected to $server"
 
-    info "Creating tmp directory in server:"
+    alert "Creating tmp directory in server:"
     run_remote "mkdir -p $tmp_dir"
     [ $? -ne 0 ] && error "mkdir $tmp_dir in $server failed"
     success "Created tmp directory in $server"
 
-    info "Pushing cert files to server:"
+    alert "Pushing cert files to server:"
     run_remote "scp -o LogLevel=ERROR -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P %(port)s -r '%(cert_path)s' $server:$tmp_dir" 0
     [ $? -ne 0 ] && error "scp '%(cert_path)s' to $server:$tmp_dir failed"
     success "Pushed cert files to $server:$tmp_dir"
 
-    info "Cleaning up old backup cert in server:"
+    alert "Cleaning up old backup cert in server:"
     run_remote "[ -d $backup_path ] && ls $backup_path 2>/dev/null | wc -l | xargs -I {} [ {} -ge $keep_backups ] && exit 0 || exit 1"
     if [ "$?" -eq 0 ]; then
         run_remote "ls $backup_path -t | tail -1 | xargs -I {} rm -r \"$backup_path/{}\""
         [ $? -ne 0 ] && error "scp '%(cert_path)s' to $server:$tmp_dir failed"
         success "Cleaned up old backup cert in $server"
     else
-        info "It is not need to clean up beacause current backup size less than $keep_backups"
+        alert "It is not need to clean up beacause current backup size less than $keep_backups"
     fi
 
-    info "Backuping used cert in server:"
+    alert "Backuping used cert in server:"
     run_remote "mkdir -p $backup_path"
     [ $? -ne 0 ] && error "mkdir $backup_path in $server failed"
     run_remote "[ -d \"$deploy_path\" ]"
@@ -79,27 +79,27 @@ script_template = '''
         [ $? -ne 0 ] && error "move \"$deploy_path\" to \"$backup_path/$timestamp\" in $server failed"
         success "Backuped cert into $backup_path in $server"
     else
-        info "\"$deploy_path\" is not found, not need to backup"
+        alert "\"$deploy_path\" is not found, not need to backup"
     fi
 
-    info "Moving new cert to deploy directory in server:"
+    alert "Moving new cert to deploy directory in server:"
     run_remote "mv \"$tmp_dir/$cert_name\" \"$deploy_path\""
     [ $? -ne 0 ] && error "move \"$tmp_dir/$cert_name\" to \"$deploy_path\" in $server failed"
     success "Moved new cert to $deploy_path in $server"
 
-    info "Removing tmp directory in server:"
+    alert "Removing tmp directory in server:"
     run_remote "rm -r \"$tmp_dir\""
     [ $? -ne 0 ] && error "remove \"$tmp_dir\" in $server failed"
     success "Moved new cert to $tmp_dir in $server"
 
     if [ "%(restart_nginx)i" -gt 0 ]; then
-        info "Trying restart nginx in server:"
+        alert "Trying restart nginx in server:"
 
-        info "Checking if nginx is installed:"
+        alert "Checking if nginx is installed:"
         run_remote "command -v nginx > /dev/null"
         [ $? -ne 0 ] && error "nginx is not found, add nginx to PATH environment if nginx is installed"
 
-        info "Checking nginx configuration file:"
+        alert "Checking nginx configuration file:"
         run_remote "nginx -t 2> /dev/null"
         [ $? -ne 0 ] && error "nginx configuration file test failed in $server"
 
