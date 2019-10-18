@@ -137,6 +137,8 @@ $ sudo python ./bin/deploy.py --check
 $ sudo python ./bin/deploy.py --push --cert $certificate_name --server $server_host
 ```
 
+**Note**: 如果 `deploy.server` 以强制模式启动了 SELinux, 你需要确认 nginx 有权限访问 `deploy.server.deploy_to` 的 SELinux 安全上下文。
+
 ## 致谢
 
 - [Certbot](https://github.com/certbot/certbot)
