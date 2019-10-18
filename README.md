@@ -1,5 +1,7 @@
 # Let's Certbot
 
+[中文文档 Chinese document](/README-CN.md)
+
 Let's Certbot is a tool builds automated scripts base on [Certbot](https://certbot.eff.org/) for obtaining, renewing, deploying SSL certificates.
 
 In order to verify your domains, Let's Certbot uses dns challenge on Certbot. Compared to http challenge, it means you can obtain a wildcard certificate and don't need to touch webserver.
