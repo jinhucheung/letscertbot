@@ -2,7 +2,7 @@
 
 Let's Certbot 是一个基于 [Certbot](https://certbot.eff.org/) 用于构建自动化获取、续期、部署 SSL 证书脚本的工具。
 
-为了验证你的域名，Let's Certbot 使用了 Certbot 的 dns 方式进行验证。这对比 http 方式验证，你不需要在已部署好的 Web 应用进行任何操作，同时你也可以申请通配符证书。
+为了验证你的域名，Let's Certbot 使用了 Certbot 的 dns 方式进行验证。这对比 http 方式验证，你不需要在已部署的 Web 应用中进行任何操作，同时你也可以申请通配符证书。
 
 在 dns 验证过程中，你需要为你的域名设置一个指定内容的 TXT DNS 记录。Let's Certbot 将会通过域名服务商的 DNS API 帮助你设置。
 
@@ -121,7 +121,7 @@ $ sudo python ./bin/renewal.py --certs xny.example.com --force
 
 如果你将 `deploy.enable` 设置为 true, Certbot 将执行 deployment 脚本 (`deploy.py`) 在 deploy 钩子上。这个脚本接收到已经续期的证书并将它推送到配置好的服务器中。
 
-Let's Certbot 通过 SSH 部署证书，这意味着你执行 Certbot 的机器须通过 SSH 连接上部署机器。为了使连接成功，你需要将**上传公钥**到部署机器或者提供 **`deploy.server.password` 给 `sshpass` 工具**
+Let's Certbot 通过 SSH 部署证书，这意味着你执行 Certbot 的机器须通过 SSH 连接上部署机器。为了使连接成功，你需要将**上传公钥**到部署机器或者**提供 `deploy.server.password`** 给 `sshpass` 工具。
 
 此外，为了将证书部署到 `deploy.server.deploy_to` 或重启 nginx, Let's Certbot 要求 `deploy.server.user` 有执行对应操作的权限。
 
