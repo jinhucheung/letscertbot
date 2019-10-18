@@ -1,6 +1,6 @@
 # Let's Certbot
 
-Let's Certbot 是一个基于 [Certbot](https://certbot.eff.org/) 用于构建自动化获取、续期、部署 SSL 证书脚本的工具。
+Let's Certbot 是一个基于 [Certbot](https://certbot.eff.org/) 用于自动化获取、续期、部署 SSL 证书的工具。
 
 为了验证你的域名，Let's Certbot 使用了 Certbot 的 dns 方式进行验证。这对比 http 方式验证，你不需要在已部署的 Web 应用中进行任何操作，同时你也可以申请通配符证书。
 
