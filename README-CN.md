@@ -31,7 +31,7 @@ $ sudo certbot --version
 克隆本仓库以获取 Let's Certbot:
 
 ```
-$ git clone git@gitlab.bdachina.net:operation-group/letscertbot.git
+$ git clone git@github.com:jinhucheung/letscertbot.git
 ```
 
 然后拷贝配置文件:
