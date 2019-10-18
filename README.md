@@ -79,7 +79,7 @@ $ sudo python ./bin/manual.py --test --domain your.example.com --api aliyun
 
 The script will place `_acme-challenge` TXT record under your domain via specified DNS API.
 
-### Obtains
+### Obtainment
 
 Run the obtainment script (`obtain.py`) with root for obtaining certificate:
 
