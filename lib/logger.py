@@ -10,8 +10,8 @@ root_path = os.path.sep.join([os.path.split(os.path.realpath(__file__))[0], '..'
 
 Logger = logging.getLogger('logger')
 
-if 'enable' in Config['log'] and Config['log']['enable']:
-    logfile = Config['log']['logfile'] if 'logfile' in Config['log'] and Config['log']['logfile'] else './log/application.log'
+if Config['log'].get('enable', False):
+    logfile = Config['log'].get('logfile', None) or './log/application.log'
     if not logfile.startswith('/'):
         logfile = os.path.sep.join([root_path, logfile])
 

@@ -24,8 +24,9 @@ script_template = '''
     keep_backups=%(keep_backups)s
 
     # define function
-    alert () { echo "Info: $1"; }
+    alert () { echo "Alert: $1"; }
     success () { echo "\033[0;32mSuccess: $1\033[0m"; }
+    cmd_info () { echo "\033[1;33mCommand: $1\033[0m"; }
     error () { echo "\033[0;31mError: $1\033[0m" >&2; exit 1; }
 
     run_remote () {
@@ -38,7 +39,7 @@ script_template = '''
         fi
         [ -n "%(password)s" ] && cmd="sshpass -p %(password)s $cmd"
 
-        alert "$cmd"
+        cmd_info "$cmd"
         eval $cmd
     }
 
@@ -129,7 +130,7 @@ def run():
     try:
         Logger.info('deploy#run deploy')
 
-        if not ('enable' in Config['deploy'] and Config['deploy']['enable']):
+        if not Config['deploy'].get('enable', False):
             raise Exception('deploy setting is disabled in config file')
 
         if 'RENEWED_LINEAGE' not in os.environ:
@@ -190,12 +191,12 @@ def push(cert_name, server_host):
         print("deploy#push raise Exception: " + str(e))
 
 def build_script(server, cert_path = None):
-    keep_backups = Config['deploy']['keep_backups'] if 'keep_backups' in Config['deploy'] and Config['deploy']['keep_backups'] else 2
-    user = server['user'] if 'user' in server and server['user'] else 'root'
-    password = server['password'] if 'password' in server else ''
-    port = server['port'] if 'port' in server and server['port'] else 22
-    deploy_to = server['deploy_to'] if 'deploy_to' in server and server['deploy_to'] else certs_root_path
-    restart_nginx = server['nginx']['restart'] if 'nginx' in server and 'restart' in server['nginx'] else False
+    keep_backups = Config['deploy'].get('keep_backups', None) or 2
+    user = server.get('user', None) or 'root'
+    password = server.get('password', '')
+    port = server.get('port', None) or 22
+    deploy_to = server.get('deploy_to', None) or certs_root_path
+    restart_nginx = server.get('nginx', False) and (server['nginx'].get('restart', None) or False)
 
     return script_template % {
             'restart_nginx': restart_nginx,

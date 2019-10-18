@@ -156,4 +156,4 @@ $ sudo python ./bin/deploy.py --push --cert $certificate_name --server $server_h
 
 ## 许可
 
-根据 MIT 许可的条款，该存储库可作为开放源代码使用。
+根据 [MIT](MIT-LICENSE) 许可的条款，该存储库可作为开放源代码使用。

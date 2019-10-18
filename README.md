@@ -123,7 +123,7 @@ $ sudo python ./bin/renewal.py --certs xny.example.com --force
 
 If you set `deploy.enable` to true, Certbot will run the deployment script (`deploy.py`) on deploy hook. The script receives renewed certificate and push it to configured servers.
 
-Let's Certbot deploys certificate via SSH, it means that local server runs Certbot must be able to connect deployment server. In order to connect, you need to **add the public key** of local server to deployment server or **provide `deploy.server.password` for `sshpass`**.
+Let's Certbot deploys certificate via SSH, it means that local server runs Certbot must be able to connect deployment server. In order to connect, you need to **add the public key** of local server to deployment server or **provide `deploy.server.password`** for `sshpass`.
 
 In order to add certificate to `deploy.server.deploy_to` or restart nginx, Let's Certbot requires `deploy.server.user` has permissions.
 
