@@ -56,16 +56,8 @@ $ cp config.json.example config.json
 | log.logfile                  | false | 日志文件路径                           | ./log/application.log |
 | deploy.enable                | false | 是否启用部署脚本                       | false                 |
 | deploy.keep_backups          | false | 备份证书数量                           | 2                     |
-| deploy.servers ```
-$ sudo python ./bin/deploy.py --push --cert $certificate_name --server $server_host
-```              | false | 部署服务器列表                         |           ```
-$ sudo python ./bin/deploy.py --push --cert $certificate_name --server $server_host
-```            |
-| deploy.server.h```
-$ sudo python ./bin/deploy.py --push --cert $certificate_name --server $server_host
-```ost           | false | 部署服务器地址，启用部署脚本后必须提供 |             ```
-$ sudo python ./bin/deploy.py --push --cert $certificate_name --server $server_host
-```          |
+| deploy.servers               | false | 部署服务器列表                         |                       |
+| deploy.server.host           | false | 部署服务器地址，启用部署脚本后必须提供 |                       |
 | deploy.server.port           | false | 部署服务器 SSH 守护进程绑定的端口      | 22                    |
 | deploy.server.user           | false | 部署服务器登录的用户，用于执行部署脚本 | root                  |
 | deploy.server.password       | false | 部署服务器登录的密码                   |                       |
