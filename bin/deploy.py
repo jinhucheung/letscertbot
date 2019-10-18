@@ -80,7 +80,7 @@ script_template = '''
     [ $? -ne 0 ] && error "mkdir $backup_path in $server failed"
     run_remote "[ -d \"$deploy_path\" ]"
     if [ $? -eq 0 ]; then
-        run_remote "mv \"$deploy_path\" \"$backup_path/$timestamp\""
+        run_remote "mv -Z \"$deploy_path\" \"$backup_path/$timestamp\""
         [ $? -ne 0 ] && error "move \"$deploy_path\" to \"$backup_path/$timestamp\" in $server failed"
         success "Backuped cert into $backup_path in $server"
     else
@@ -88,7 +88,7 @@ script_template = '''
     fi
 
     alert "Moving new cert to deploy directory in server:"
-    run_remote "mv \"$tmp_dir/$cert_name\" \"$deploy_path\""
+    run_remote "mv -Z \"$tmp_dir/$cert_name\" \"$deploy_path\""
     [ $? -ne 0 ] && error "move \"$tmp_dir/$cert_name\" to \"$deploy_path\" in $server failed"
     success "Moved new cert to $deploy_path in $server"
 
