@@ -65,11 +65,61 @@ Before running Let's Certbot, you have the following configuration to change:
 | deploy.server.nginx          | false    | The nginx settings of deploy server                       |                       |
 | deploy.server.nginx.restart  | false    | Whether to restart nginx                                  | false                 |
 
+In addition, `tlds.txt` contains some top level domains(TLD) and second level domains(SLD) for separating subdomain and main domain. If the TLD or SLD of your domain is not existed in `tlds.txt`, you need to append it in list.
+
+### DNS API
+
+Before obtaining certificate, you can run manual script (`manual.py`) to test DNS API with with your access key:
+
+```
+$ sudo python ./bin/manual.py --test --domain your.example.com --api aliyun
+```
+
+The script will place `_acme-challenge` TXT record under your domain via specified DNS API.
+
 ### Obtains
+
+Run the obtainment script (`obtain.py`) with root for obtaining certificate:
+
+```
+$ sudo python ./bin/obtain.py -d your.example.com *.your.example.com
+```
+
+Then you will get a wildcard certificate names `your.example.com` in `/etc/letsencrypt/live/`
+
+You can specify certificate name with `--cert` argument:
+
+```
+$ sudo python ./bin/obtain.py -d x.example.com y.example.com --cert xny.example.com
+```
 
 ### Renewal
 
+Renew certificates with the renewal script (`renewal.py`):
+
+```
+$ sudo python ./bin/renewal.py
+```
+
+Then Certbot will try renew all certificates which will be expired soon.
+
+You can add renewal script as schedule task to `crontab`:
+
+```
+0 0 */7 * * sudo $your_letscertbot_home/bin/renewal.py > /var/log/letscertbot-renewal.log 2>&1
+```
+
+The task will run renewal script every 7 days.
+
+If you need to force renew specified certificates, provide `--force` and `--certs` arguments:
+
+```
+$ sudo python ./bin/renewal.py --certs xny.example.com --force
+```
+
 ### Deployment
+
+If you set `deploy.enable` to true, Certbot will run the deployment script (`deploy.py`) on deploy hook. The script receives renewed certificate and push it to configured servers.
 
 Let's Certbot deploys certificate via SSH, it means that local server runs Certbot must be able to connect deployment server. In order to connect, you need to **add the public key** of local server to deployment server or **provide `deploy.server.password` for `sshpass`**.
 
@@ -86,8 +136,6 @@ And push certificate to server:
 ```
 $ sudo python ./bin/deploy.py --push --cert $certificate_name --server $server_host
 ```
-
-If you set `deploy.enable` to true, Certbot will run above deployment script on deploy hook. `deploy.py` receives renewed certificate and push it to configured servers. see [more](https://certbot.eff.org/docs/using.html#renewing-certificates)
 
 ## Thanks
 

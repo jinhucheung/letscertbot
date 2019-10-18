@@ -57,7 +57,7 @@ def main():
     parser = argparse.ArgumentParser(description='example: python %s -d domain.com *.domain.com' % os.path.basename(__file__))
 
     parser.add_argument('-d', '--domains', help='domain list', required=True, nargs='+')
-    parser.add_argument('-c', '--cert', help='cert name, e.g. domain.com')
+    parser.add_argument('-c', '--cert', help='certificate name, e.g. domain.com')
     parser.add_argument('-f', '--force', help='force renewal', default=False, action='store_true')
 
     args = parser.parse_args()
