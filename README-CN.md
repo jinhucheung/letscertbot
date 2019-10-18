@@ -31,7 +31,7 @@ $ sudo certbot --version
 克隆本仓库以获取 Let's Certbot:
 
 ```
-$ git clone git@gitlab.bdachina.net:operation-group/letscertbot.git/letscertbot.git
+$ git clone git@gitlab.bdachina.net:operation-group/letscertbot.git
 ```
 
 然后拷贝配置文件:
@@ -121,7 +121,7 @@ $ sudo python ./bin/renewal.py --certs xny.example.com --force
 
 如果你将 `deploy.enable` 设置为 true, Certbot 将执行 deployment 脚本 (`deploy.py`) 在 deploy 钩子上。这个脚本接收到已经续期的证书并将它推送到配置好的服务器中。
 
-Let's Certbot 通过 SSH 部署证书，这意味着你执行 Certbot 的机器须可通过 SSH 连接上部署机器。为了使连接成功，你需要将**上传公钥**到部署机器或者提供 **`deploy.server.password` 给 `sshpass` 工具**
+Let's Certbot 通过 SSH 部署证书，这意味着你执行 Certbot 的机器须通过 SSH 连接上部署机器。为了使连接成功，你需要将**上传公钥**到部署机器或者提供 **`deploy.server.password` 给 `sshpass` 工具**
 
 此外，为了将证书部署到 `deploy.server.deploy_to` 或重启 nginx, Let's Certbot 要求 `deploy.server.user` 有执行对应操作的权限。
 

@@ -33,7 +33,7 @@ $ sudo certbot --version
 Clone this repository to get Let's Certbot:
 
 ```
-$ git clone git@gitlab.bdachina.net:operation-group/letscertbot.git/letscertbot.git
+$ git clone git@gitlab.bdachina.net:operation-group/letscertbot.git
 ```
 
 Then copy configurations:
