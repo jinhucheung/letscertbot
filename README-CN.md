@@ -65,7 +65,7 @@ $ cp config.json.example config.json
 | deploy.server.nginx          | false | 部署服务器的 nginx 设置                |                       |
 | deploy.server.nginx.restart  | false | 是否在部署后重启 nginx                 | false                 |
 
-此外， `tlds.txt` 文件包含了一些顶级域名(TLD)和二级域名(SLD) 用于分开域名中的子域和主域。如果你域名的中顶级域或二级域不在 `tlds.txt` 中，你需要将它添加在此文件中。
+此外， `tlds.txt` 文件包含了一些顶级域名(TLD)和二级域名(SLD) 用于分开域名中的子域和主域。如果你域名中的顶级域或二级域不在 `tlds.txt` 中，你需要将它添加在此文件中。
 
 ### DNS API
 
