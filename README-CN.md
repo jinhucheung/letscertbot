@@ -12,7 +12,7 @@ Let's Certbot 是一个基于 [Certbot](https://certbot.eff.org/) 用于自动�
 
 ## 安装
 
-Let's Certbot 作为一个 Certbot 工具， 它与 Certbot 执行环境一致，要求执行在类 UNIX 操作系统上且需要 Python 2.7 或 3.4+。
+Let's Certbot 作为一个 Certbot 工具，它与 Certbot 执行环境一致，要求执行在类 UNIX 操作系统上且需要 Python 2.7 或 3.4+。
 
 首先，你需要确认 Python 是否已经安装:
 
@@ -20,7 +20,7 @@ Let's Certbot 作为一个 Certbot 工具， 它与 Certbot 执行环境一致�
 $ python --version
 ```
 
-如果没有问题，根据 Certbot [官方文档](https://certbot.eff.org/docs/install.html)为你的操作系统安装 Certbot。
+如果没有问题，根据 Certbot [官方文档](https://certbot.eff.org/docs/install.html) 为你的操作系统安装 Certbot。
 
 在安装完 Certbot 后，使用 root 执行 Certbot:
 
@@ -121,7 +121,7 @@ $ sudo python ./bin/renewal.py --certs xny.example.com --force
 
 如果你将 `deploy.enable` 设置为 true, Certbot 将执行 deployment 脚本 (`deploy.py`) 在 deploy 钩子上。这个脚本接收到已经续期的证书并将它推送到配置好的服务器中。
 
-Let's Certbot 通过 SSH 部署证书，这意味着你执行 Certbot 的机器须通过 SSH 连接上部署机器。为了使连接成功，你需要将**上传公钥**到部署机器或者**提供 `deploy.server.password`** 给 `sshpass` 工具。
+Let's Certbot 通过 SSH 部署证书，这意味着你执行 Certbot 的机器须通过 SSH 连接上部署机器。为了使连接成功，你需要**上传公钥**到部署机器或者**提供 `deploy.server.password`** 给 `sshpass` 工具。
 
 此外，为了将证书部署到 `deploy.server.deploy_to` 或重启 nginx, Let's Certbot 要求 `deploy.server.user` 有执行对应操作的权限。
 

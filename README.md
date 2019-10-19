@@ -139,7 +139,7 @@ And push certificate to server:
 $ sudo python ./bin/deploy.py --push --cert $certificate_name --server $server_host
 ```
 
-**Note**: If `deploy.server` enables SELinux in enforcing mode, you need to confirm that nginx has access to the SElinux security context of `deploy.server.deploy_to`
+**Note**: If `deploy.server` enables SELinux in enforcing mode, you need to confirm that nginx has access to the SElinux security context of `deploy.server.deploy_to`.
 
 ## Thanks
 
