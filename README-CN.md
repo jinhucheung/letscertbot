@@ -149,7 +149,7 @@ $ sudo python ./bin/deploy.py --push --cert $certificate_name --server $server_h
 
 欢迎报告 Bug 或提交 Pull Request。
 
-1. 分叉当前仓库
+1. 分叉此仓库
 2. 创建你的功能分支 (git checkout -b my-new-feature)
 3. 提交你的改动 (git commit -am 'Add some feature')
 4. 推送到当前分支 (git push origin my-new-feature)
@@ -158,4 +158,4 @@ $ sudo python ./bin/deploy.py --push --cert $certificate_name --server $server_h
 
 ## 许可
 
-根据 [MIT](MIT-LICENSE) 许可的条款，该存储库可作为开放源代码使用。
+根据 [MIT](MIT-LICENSE) 许可的条款，此仓库可作为开放源代码使用。
