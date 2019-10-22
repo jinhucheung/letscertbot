@@ -91,7 +91,7 @@ def test(domain, api_type = 'aliyun'):
 def __get_api_client(api_type = 'aliyun'):
     try:
         switch = {
-            'aliyun': __get_alidns_client
+            'aliyun': __get_aliyun_client
         }
         return switch[api_type]()
     except KeyError as e:
@@ -99,11 +99,11 @@ def __get_api_client(api_type = 'aliyun'):
         Logger.error('manual#get_api raise KeyError: ' + str(e))
         sys.exit()
 
-def __get_alidns_client():
+def __get_aliyun_client():
     access_key_id = Config['api']['aliyun']['access_key_id']
     access_key_secret = Config['api']['aliyun']['access_key_secret']
 
-    return api.AliDns(access_key_id, access_key_secret)
+    return api.Aliyun(access_key_id, access_key_secret)
 
 def __extract_maindomain_and_challenge(domain):
     sudomain, maindomain = Utils.extract_domain(domain)

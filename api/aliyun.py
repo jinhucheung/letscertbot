@@ -18,14 +18,14 @@ else:
 
 logger = logging.getLogger('logger')
 
-class AliDns:
+class Aliyun:
     __endpoint = 'https://alidns.aliyuncs.com'
 
     def __init__(self, access_key_id, access_key_secret):
         self.access_key_id = access_key_id
         self.access_key_secret = access_key_secret
 
-    # @example alidns.add_domain_record("example.com", "_acme-challenge", "123456", "TXT")
+    # @example aliyun.add_domain_record("example.com", "_acme-challenge", "123456", "TXT")
     def add_domain_record(self, domain, rr, value, _type = 'TXT'):
         params = {
             'Action'     : 'AddDomainRecord',
@@ -36,7 +36,7 @@ class AliDns:
         }
         self.__request(params)
 
-    # @example alidns.delete_domain_record("example.com", "_acme-challenge", "TXT")
+    # @example aliyun.delete_domain_record("example.com", "_acme-challenge", "TXT")
     def delete_domain_record(self, domain, rr, _type = 'TXT'):
         params = {
             'Action'     : 'DeleteSubDomainRecords',
@@ -47,7 +47,7 @@ class AliDns:
         self.__request(params)
 
     def to_string(self):
-        return 'AliDns[access_key_id=' + self.access_key_id + ', access_key_secret=' + self.access_key_secret + ']'
+        return 'aliyun[access_key_id=' + self.access_key_id + ', access_key_secret=' + self.access_key_secret + ']'
 
     def __request(self, params):
         url = self.__compose_url(params)
@@ -57,7 +57,7 @@ class AliDns:
             response = f.read().decode('utf-8')
             logger.info(response)
         except urllib2.HTTPError as e:
-            logger.error('alidns#__request raise urllib2.HTTPError: ' + e.read().strip().decode('utf-8'))
+            logger.error('aliyun#__request raise urllib2.HTTPError: ' + e.read().strip().decode('utf-8'))
             raise SystemExit(e)
 
     def __compose_url(self, params):
@@ -124,11 +124,11 @@ if __name__ == '__main__':
 
     _, action, certbot_domain, acme_challenge, certbot_validation, access_key_id, access_key_secret = sys.argv
 
-    alidns = AliDns(access_key_id, access_key_secret)
+    aliyun = Aliyun(access_key_id, access_key_secret)
 
     if 'add' == action:
-        alidns.add_domain_record(certbot_domain, acme_challenge, certbot_validation)
+        aliyun.add_domain_record(certbot_domain, acme_challenge, certbot_validation)
     elif 'delete' == action:
-        result = alidns.delete_domain_record(certbot_domain, acme_challenge)
+        aliyun.delete_domain_record(certbot_domain, acme_challenge)
 
     logger.info('结束调用阿里云 DNS API')
