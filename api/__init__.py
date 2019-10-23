@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__all__ = ['AliDns']
+__all__ = ['Aliyun']
 
-from api.alidns import AliDns
+from api.aliyun import Aliyun
