@@ -49,23 +49,21 @@ $ cp config.json.example config.json
 
 Before running Let's Certbot, you have the following configuration to change:
 
-| Name                         | Required | Description                                               | Default               |
-| ---------------------------- | -------- | --------------------------------------------------------- | --------------------- |
-| base.email                   | true     | Email address for important renewal notifications         |                       |
-| api.aliyun.access_key_id     | true     | AccessKey ID of Aliyun account                            |                       |
-| api.aliyun.access_key_secret | true     | AccessKey Secret of Aliyun account                        |                       |
-| log.enable                   | false    | Whether to enable log tracker                             | false                 |
-| log.logfile                  | false    | The path of log file                                      | ./log/application.log |
-| deploy.enable                | false    | Whether to run deployment script                          | false                 |
-| deploy.keep_backups          | false    | The last n releases are kept for backups                  | 2                     |
-| deploy.servers               | false    | The deployment servers                                    |                       |
-| deploy.server.host           | false    | The host of deployment server, required on deploy         |                       |
-| deploy.server.port           | false    | The port of deployment server SSH daemon                  | 22                    |
-| deploy.server.user           | false    | The user of deployment server uses SSH login, run command | root                  |
-| deploy.server.password       | false    | The password of deployment user                           |                       |
-| deploy.server.deploy_to      | false    | The stored path of certificate                            | /etc/letsencrypt/live |
-| deploy.server.nginx          | false    | The nginx settings of deploy server                       |                       |
-| deploy.server.nginx.restart  | false    | Whether to restart nginx                                  | false                 |
+| Name                         | Required | Description                                                      | Default               |
+| ---------------------------- | -------- | ---------------------------------------------------------------- | --------------------- |
+| base.email                   | true     | Email address for important renewal notifications                |                       |
+| api.aliyun.access_key_id     | true     | AccessKey ID of Aliyun account                                   |                       |
+| api.aliyun.access_key_secret | true     | AccessKey Secret of Aliyun account                               |                       |
+| log.enable                   | false    | Whether to enable log tracker                                    | false                 |
+| log.logfile                  | false    | The path of log file                                             | ./log/application.log |
+| deploy.remotes               | false    | The deployment remote servers                                    |                       |
+| deploy.remote.enable         | false    | Whether to run deployment script for remote server               | false                 |
+| deploy.remote.host           | false    | The host of remote deployment server, required on deploy         |                       |
+| deploy.remote.port           | false    | The port of remote deployment server SSH daemon                  | 22                    |
+| deploy.remote.user           | false    | The user of remote deployment server uses SSH login, run command | root                  |
+| deploy.remote.password       | false    | The password of remote deployment user                           |                       |
+| deploy.remote.deploy_to      | false    | The stored path of certificate in remote server                  | /etc/letsencrypt/live |
+| deploy.remote.restart_nginx  | false    | Whether to restart nginx in remote server                        | false                 |
 
 In addition, `tlds.txt` contains some top level domains(TLD) and second level domains(SLD) for separating subdomain and main domain. If the TLD or SLD of your domain is not existed in `tlds.txt`, you need to append it in list.
 
@@ -121,11 +119,11 @@ $ sudo python ./bin/renewal.py --certs xny.example.com --force
 
 ### Deployment
 
-If you set `deploy.enable` to true, Certbot will run the deployment script (`deploy.py`) on deploy hook. The script receives renewed certificate and push it to configured servers.
+If you set `deploy.remote.enable` to true, Certbot will run the deployment script (`deploy.py`) on deploy hook. The script receives renewed certificate and push it to configured servers.
 
-Let's Certbot deploys certificate via SSH, it means that local server runs Certbot must be able to connect deployment server. In order to connect, you need to **add the public key** of local server to deployment server or **provide `deploy.server.password`** for `sshpass`.
+Let's Certbot deploys certificate via SSH, it means that local server runs Certbot must be able to connect deployment server. In order to connect, you need to **add the public key** of local server to deployment server or **provide `deploy.remote.password`** for `sshpass`.
 
-In order to add certificate to `deploy.server.deploy_to` or restart nginx, Let's Certbot requires `deploy.server.user` has permissions.
+In order to add certificate to `deploy.remote.deploy_to` or restart nginx, Let's Certbot requires `deploy.remote.user` has permissions.
 
 You can get deployment script by running the following command:
 
@@ -139,7 +137,7 @@ And push certificate to server:
 $ sudo python ./bin/deploy.py --push --cert $certificate_name --server $server_host
 ```
 
-**Note**: If `deploy.server` enables SELinux in enforcing mode, you need to confirm that nginx has access to the SElinux security context of `deploy.server.deploy_to`.
+**Note**: If `deploy.remote` enables SELinux in enforcing mode, you need to confirm that nginx has access to the SElinux security context of `deploy.remote.deploy_to`.
 
 ## Thanks
 

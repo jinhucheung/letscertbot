@@ -4,6 +4,8 @@
 import os
 import sys
 
+from .config import Config
+
 root_path = os.path.sep.join([os.path.split(os.path.realpath(__file__))[0], '..'])
 tlds_path = os.path.sep.join([root_path, 'tlds.txt'])
 
@@ -22,11 +24,23 @@ def extract_domain(domain):
 
     return ('', domain)
 
+def is_enable_deployment():
+    try:
+        deploy = Config.get('deploy', {})
+        remotes = deploy.get('remotes', [])
 
-if __name__ == '__main__':
-    domains = sys.argv[1:]
+        for server in remotes:
+            if server and server.get('enable', False):
+                return True
+        return False
+    except Exception as e:
+        print("utils#is_enable_deployment raise Exception: " + str(e))
+        return False
 
-    print('(sudomain, maindomain)')
+# if __name__ == '__main__':
+#     domains = sys.argv[1:]
 
-    for domain in domains:
-        print(extract_domain(domain))
+#     print('(sudomain, maindomain)')
+
+#     for domain in domains:
+#         print(extract_domain(domain))

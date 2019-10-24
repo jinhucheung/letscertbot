@@ -19,9 +19,10 @@ script_template = '''
     cert_name=$(basename '%(cert_path)s')
 
     server="%(user)s@%(host)s"
-    deploy_path="%(deploy_to)s/$cert_name"
-    backup_path="%(deploy_to)s/backup/$cert_name"
-    keep_backups=%(keep_backups)s
+    deploy_path="%(deploy_to)s"
+    deploy_cert_path="$deploy_path/$cert_name"
+    backup_path="$deploy_path/backup"
+    backup_cert_path="$backup_path/$cert_name"
 
     # define function
     alert () { echo "Alert: $1"; }
@@ -66,35 +67,40 @@ script_template = '''
     success "Pushed cert files to $server:$tmp_dir"
 
     alert "Cleaning up old backup cert in server:"
-    run_remote "[ -d $backup_path ] && ls $backup_path 2>/dev/null | wc -l | xargs -I {} [ {} -ge $keep_backups ] && exit 0 || exit 1"
-    if [ "$?" -eq 0 ]; then
-        run_remote "ls $backup_path -t | tail -1 | xargs -I {} rm -r \"$backup_path/{}\""
-        [ $? -ne 0 ] && error "scp '%(cert_path)s' to $server:$tmp_dir failed"
+    run_remote "[ -d $backup_cert_path ]"
+    if [ $? -eq 0 ]; then
+        run_remote "rm -rf \"$backup_cert_path\""
+        [ $? -ne 0 ] && error "Clean up old backup cert in $server failed"
         success "Cleaned up old backup cert in $server"
     else
-        alert "It is not need to clean up beacause current backup size less than $keep_backups"
+        alert "It is not need to clean up beacause current backup files are not existed"
     fi
 
     alert "Backuping used cert in server:"
-    run_remote "mkdir -p $backup_path"
-    [ $? -ne 0 ] && error "mkdir $backup_path in $server failed"
-    run_remote "[ -d \"$deploy_path\" ]"
+    run_remote "[ -d \"$deploy_cert_path\" ]"
     if [ $? -eq 0 ]; then
-        run_remote "mv -Z \"$deploy_path\" \"$backup_path/$timestamp\""
-        [ $? -ne 0 ] && error "move \"$deploy_path\" to \"$backup_path/$timestamp\" in $server failed"
-        success "Backuped cert into $backup_path in $server"
+        run_remote "mkdir -p \"$backup_path\""
+        [ $? -ne 0 ] && error "Create \"$backup_path\" in $server failed"
+        run_remote "mv -Z \"$deploy_cert_path\" \"$backup_path\""
+        [ $? -ne 0 ] && error "Move \"$deploy_cert_path\" to \"$backup_path\" in $server failed"
+        success "Backuped cert into $backup_cert_path in $server"
     else
-        alert "\"$deploy_path\" is not found, not need to backup"
+        alert "\"$deploy_cert_path\" is not found, not need to backup"
     fi
 
+    alert "Trying create deploy to directory in server:"
+    run_remote "mkdir -p $deploy_path"
+    [ $? -ne 0 ] && error "Create $deploy_path directory in $server failed"
+    success "Create $deploy_path directory in $server"
+
     alert "Moving new cert to deploy directory in server:"
-    run_remote "mv -Z \"$tmp_dir/$cert_name\" \"$deploy_path\""
-    [ $? -ne 0 ] && error "move \"$tmp_dir/$cert_name\" to \"$deploy_path\" in $server failed"
-    success "Moved new cert to $deploy_path in $server"
+    run_remote "mv -Z \"$tmp_dir/$cert_name\" \"$deploy_cert_path\""
+    [ $? -ne 0 ] && error "Move \"$tmp_dir/$cert_name\" to \"$deploy_cert_path\" in $server failed"
+    success "Moved new cert to $deploy_cert_path in $server"
 
     alert "Removing tmp directory in server:"
     run_remote "rm -r \"$tmp_dir\""
-    [ $? -ne 0 ] && error "remove \"$tmp_dir\" in $server failed"
+    [ $? -ne 0 ] && error "Remove \"$tmp_dir\" in $server failed"
     success "Moved new cert to $tmp_dir in $server"
 
     if [ "%(restart_nginx)i" -gt 0 ]; then
@@ -102,24 +108,24 @@ script_template = '''
 
         alert "Checking if nginx is installed:"
         run_remote "command -v nginx > /dev/null"
-        [ $? -ne 0 ] && error "nginx is not found, add nginx to PATH environment if nginx is installed"
+        [ $? -ne 0 ] && error "Nginx is not found, add nginx to PATH environment if nginx is installed"
 
         alert "Checking nginx configuration file:"
         run_remote "nginx -t 2> /dev/null"
-        [ $? -ne 0 ] && error "nginx configuration file test failed in $server"
+        [ $? -ne 0 ] && error "Nginx configuration file test failed in $server"
 
         run_remote "command -v systemctl > /dev/null"
         if [ $? -eq 0 ]; then
             run_remote "systemctl reload nginx"
-            [ $? -ne 0 ] && error "restart nginx by 'systemctl reload nginx' in $server failed"
+            [ $? -ne 0 ] && error "Restart nginx by 'systemctl reload nginx' in $server failed"
         else
             run_remote "command -v service > /dev/null"
             if [ $? -eq 0 ]; then
                 run_remote "service reload nginx"
-                [ $? -ne 0 ] && error "restart nginx by 'service reload nginx' in $server failed"
+                [ $? -ne 0 ] && error "Restart nginx by 'service reload nginx' in $server failed"
             else
                 run_remote "nginx -s reload"
-                [ $? -ne 0 ] && error "nginx -s reload' in $server failed"
+                [ $? -ne 0 ] && error "nginx -s reload in $server failed"
             fi
         fi
         success "Restarted nginx in $server"
@@ -129,9 +135,6 @@ script_template = '''
 def run():
     try:
         Logger.info('deploy#run deploy')
-
-        if not Config['deploy'].get('enable', False):
-            raise Exception('deploy setting is disabled in config file')
 
         if 'RENEWED_LINEAGE' not in os.environ:
             raise Exception('Environment variable RENEWED_LINEAGE is empty.')
@@ -149,21 +152,27 @@ def run():
 
 def deploy():
     try:
-        servers = Config['deploy']['servers']
+        remotes = Config['deploy'].get('remotes', None)
 
-        if not (servers and len(servers) > 0):
-            raise Exception('deploy servers is empty in config file')
+        if not (remotes and len(remotes) > 0):
+            print('deploy remotes is empty in config file')
+            return
 
-        for server in servers:
-            script = build_script(server)
-
-            os.system(script)
+        for server in remotes:
+            if not server:
+                continue
+            if server.get('enable', False):
+                print('start to deploy server host: ' + server.get('host', 'Undefined'))
+                script = build_script(server)
+                os.system(script)
+            else:
+                print('server host: ' + server.get('host', 'Undefined') + 'has not enable deployment')
     except Exception as e:
         Logger.error('deploy#deploy raise Exception:' + str(e))
 
 def check(cert_name, server_host):
     cert_path = os.path.sep.join([certs_root_path, cert_name or 'your_domain.com'])
-    server = next((x for x in Config['deploy']['servers'] if x['host'] == server_host), {
+    server = next((x for x in Config['deploy']['remotes'] if x['host'] == server_host), {
         'host': server_host,
         'user': 'root'
     })
@@ -175,7 +184,7 @@ def check(cert_name, server_host):
 def push(cert_name, server_host):
     try:
         cert_path = os.path.sep.join([certs_root_path, cert_name])
-        server = next((x for x in Config['deploy']['servers'] if x['host'] == server_host), None)
+        server = next((x for x in Config['deploy']['remotes'] if x['host'] == server_host), None)
 
         if server is None:
             raise Exception('Server host: ' + server_host + 'is not found in config.json')
@@ -191,16 +200,14 @@ def push(cert_name, server_host):
         print("deploy#push raise Exception: " + str(e))
 
 def build_script(server, cert_path = None):
-    keep_backups = Config['deploy'].get('keep_backups', None) or 2
-    user = server.get('user', None) or 'root'
+    user = server.get('usefalser', None) or 'root'
     password = server.get('password', '')
     port = server.get('port', None) or 22
     deploy_to = server.get('deploy_to', None) or certs_root_path
-    restart_nginx = server.get('nginx', False) and (server['nginx'].get('restart', None) or False)
+    restart_nginx = server.get('restart_nginx', False) or False
 
     return script_template % {
             'restart_nginx': restart_nginx,
-            'keep_backups': keep_backups,
             'cert_path': _escape(cert_path or os.environ['RENEWED_LINEAGE']),
             'host': _escape(server['host']),
             'port': _escape(port),

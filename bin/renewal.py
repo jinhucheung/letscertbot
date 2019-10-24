@@ -8,7 +8,7 @@ import argparse
 root_path = os.path.sep.join([os.path.split(os.path.realpath(__file__))[0], '..'])
 
 sys.path.append(root_path)
-from lib import Config, Logger
+from lib import Config, Logger, Utils
 
 manual_path = os.path.sep.join([root_path, 'bin', 'manual.py'])
 deploy_path = os.path.sep.join([root_path, 'bin', 'deploy.py'])
@@ -34,7 +34,7 @@ def run(args):
 
     force_renewal = '--force-renewal' if args.force else ''
 
-    deploy_hook = '--deploy-hook "python ' + deploy_path + '"' if 'enable' in Config['deploy'] and Config['deploy']['enable'] else ''
+    deploy_hook = '--deploy-hook "python ' + deploy_path + '"' if Utils.is_enable_deployment() else ''
 
     certbot_cmd = certbot_cmd_template % {
         'manual_path': manual_path,

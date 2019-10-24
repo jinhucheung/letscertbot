@@ -8,7 +8,7 @@ import argparse
 root_path = os.path.sep.join([os.path.split(os.path.realpath(__file__))[0], '..'])
 
 sys.path.append(root_path)
-from lib import Config, Logger
+from lib import Config, Logger, Utils
 
 manual_path = os.path.sep.join([root_path, 'bin', 'manual.py'])
 deploy_path = os.path.sep.join([root_path, 'bin', 'deploy.py'])
@@ -36,7 +36,7 @@ def run(args):
 
     Logger.info('obtain domains: ' + domains)
 
-    deploy_hook = '--deploy-hook "python ' + deploy_path + '"' if 'enable' in Config['deploy'] and Config['deploy']['enable'] else ''
+    deploy_hook = '--deploy-hook "python ' + deploy_path + '"' if Utils.is_enable_deployment() else ''
     cert_name = '--cert-name ' + args.cert if args.cert else ''
     force_renewal = '--force-renewal' if args.force else ''
 

@@ -13,18 +13,15 @@
     "logfile": "./log/application.log"
   },
   "deploy": {
-    "enable": false,
-    "keep_backups": 2,
-    "servers": [
+    "remotes": [
       {
+        "enable": false,
         "host": "192.168.1.1",
         "port": 22,
         "user": "root",
         "password": "",
         "deploy_to": "/etc/letsencrypt/live",
-        "nginx": {
-          "restart": false
-        }
+        "restart_nginx": false
       }
     ]
   }
