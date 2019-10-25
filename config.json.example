@@ -13,7 +13,7 @@
     "logfile": "./log/application.log"
   },
   "deploy": {
-    "remotes": [
+    "servers": [
       {
         "enable": false,
         "host": "192.168.1.1",

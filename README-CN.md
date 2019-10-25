@@ -47,21 +47,21 @@ $ cp config.json.example config.json
 
 在执行 Let's Certbot 前，你有以下的配置需要更新:
 
-| 名称                         | 必须  | 描述                                       | 默认                  |
-| ---------------------------- | ----- | ------------------------------------------ | --------------------- |
-| base.email                   | true  | 邮箱地址，用于接收续期等通知               |                       |
-| api.aliyun.access_key_id     | true  | 阿里云帐号的 AccessKey ID                  |                       |
-| api.aliyun.access_key_secret | true  | 阿里云帐号的 AccessKey Secret              |                       |
-| log.enable                   | false | 是否启用日志跟踪                           | false                 |
-| log.logfile                  | false | 日志文件路径                               | ./log/application.log |
-| deploy.remotes               | false | 部署远端服务器列表                         |                       |
-| deploy.remote.enable         | false | 部署远端服务器是否启用部署脚本             | false                 |
-| deploy.remote.host           | false | 部署远端服务器地址，启用部署脚本后必须提供 |                       |
-| deploy.remote.port           | false | 部署远端服务器 SSH 守护进程绑定的端口      | 22                    |
-| deploy.remote.user           | false | 部署远端服务器登录的用户，用于执行部署脚本 | root                  |
-| deploy.remote.password       | false | 部署远端服务器登录的密码                   |                       |
-| deploy.remote.deploy_to      | false | 部署证书存储在远端服务器的路径             | /etc/letsencrypt/live |
-| deploy.remote.restart_nginx  | false | 是否在部署后重启远端服务器 nginx           | false                 |
+| 名称                         | 必须  | 描述                                   | 默认                  |
+| ---------------------------- | ----- | -------------------------------------- | --------------------- |
+| base.email                   | true  | 邮箱地址，用于接收续期等通知           |                       |
+| api.aliyun.access_key_id     | true  | 阿里云帐号的 AccessKey ID              |                       |
+| api.aliyun.access_key_secret | true  | 阿里云帐号的 AccessKey Secret          |                       |
+| log.enable                   | false | 是否启用日志跟踪                       | false                 |
+| log.logfile                  | false | 日志文件路径                           | ./log/application.log |
+| deploy.servers               | false | 部署服务器列表                         |                       |
+| deploy.server.enable         | false | 部署服务器是否启用部署脚本             | false                 |
+| deploy.server.host           | false | 部署服务器地址，启用部署脚本后必须提供 |                       |
+| deploy.server.port           | false | 部署服务器 SSH 守护进程绑定的端口      | 22                    |
+| deploy.server.user           | false | 部署服务器登录的用户，用于执行部署脚本 | root                  |
+| deploy.server.password       | false | 部署服务器登录的密码                   |                       |
+| deploy.server.deploy_to      | false | 部署证书存储在服务器的路径             | /etc/letsencrypt/live |
+| deploy.server.restart_nginx  | false | 是否在部署后重启服务器 nginx           | false                 |
 
 此外， `tlds.txt` 文件包含了一些顶级域名(TLD)和二级域名(SLD) 用于分开域名中的子域和主域。如果你域名中的顶级域或二级域不在 `tlds.txt` 中，你需要将它添加在此文件中。
 
@@ -117,11 +117,11 @@ $ sudo python ./bin/renewal.py --certs xny.example.com --force
 
 ### 部署证书
 
-如果你将 `deploy.remote.enable` 设置为 true, Certbot 将执行 deployment 脚本 (`deploy.py`) 在 deploy 钩子上。这个脚本接收到已经续期的证书并将它推送到配置好的服务器中。
+如果你将 `deploy.server.enable` 设置为 true, Certbot 将执行 deployment 脚本 (`deploy.py`) 在 deploy 钩子上。这个脚本接收到已经续期的证书并将它推送到配置好的服务器中。
 
-Let's Certbot 通过 SSH 部署证书，这意味着你执行 Certbot 的机器须通过 SSH 连接上部署机器。为了使连接成功，你需要**上传公钥**到部署机器或者**提供 `deploy.remote.password`** 给 `sshpass` 工具。
+Let's Certbot 通过 SSH 部署证书，这意味着你执行 Certbot 的机器须通过 SSH 连接上部署机器。为了使连接成功，你需要**上传公钥**到部署机器或者**提供 `deploy.server.password`** 给 `sshpass` 工具。
 
-此外，为了将证书部署到 `deploy.remote.deploy_to` 或重启 nginx, Let's Certbot 要求 `deploy.remote.user` 有执行对应操作的权限。
+此外，为了将证书部署到 `deploy.server.deploy_to` 或重启 nginx, Let's Certbot 要求 `deploy.server.user` 有执行对应操作的权限。
 
 你可以通过执行下面命令获取 deployment 脚本:
 
@@ -135,7 +135,7 @@ $ sudo python ./bin/deploy.py --check
 $ sudo python ./bin/deploy.py --push --cert $certificate_name --server $server_host
 ```
 
-**Note**: 如果 `deploy.remote` 以强制模式启动了 SELinux, 你需要确认 nginx 有权限访问 `deploy.remote.deploy_to` 的 SELinux 安全上下文。
+**Note**: 如果 `deploy.server` 以强制模式启动了 SELinux, 你需要确认 nginx 有权限访问 `deploy.server.deploy_to` 的 SELinux 安全上下文。
 
 ## 致谢
 
