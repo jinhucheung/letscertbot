@@ -73,7 +73,7 @@ class DeployScriptTemplate(BaseScriptTemplate):
             }
 
             copy_certs () {
-                run "cp -r $cert_path $tmp_dir"
+                run "cp -rL $cert_path $tmp_dir"
             }
         ''') % {
             'host': self.escape_options('host')
@@ -91,10 +91,10 @@ class DeployScriptTemplate(BaseScriptTemplate):
                 use_ssh=${2:-1}
 
                 if [ $use_ssh -eq 1 ]; then
-                    [ -n $password ] || ssh_options="$ssh_options -o BatchMode=yes"
+                    [ $password ] || ssh_options="$ssh_options -o BatchMode=yes"
                     cmd="ssh $ssh_options -p $port $server '$cmd'"
                 fi
-                [ -n $password ] && cmd="sshpass -p $password $cmd"
+                [ $password ] && cmd="sshpass -p $password $cmd"
 
                 cmd_info "$cmd"
                 eval $cmd
@@ -105,7 +105,7 @@ class DeployScriptTemplate(BaseScriptTemplate):
             }
 
             # check sshpass if it is password mode
-            if [ -n $password ]; then
+            if [ $password ]; then
                 alert "Checking if sshpass is installed:"
                 [ "$(command -v sshpass)" ] || error "sshpass is not installed. In order to connect deployment server, you need to install sshpass"
                 success "sshpass has been installed"
@@ -149,8 +149,10 @@ class DeployScriptTemplate(BaseScriptTemplate):
             if [ $? -eq 0 ]; then
                 run "mkdir -p \"$backup_path\""
                 [ $? -ne 0 ] && error "Create \"$backup_path\" in $server failed"
-                run "mv -Z \"$deploy_cert_path\" \"$backup_path\""
-                [ $? -ne 0 ] && error "Move \"$deploy_cert_path\" to \"$backup_path\" in $server failed"
+                run "cp -rL \"$deploy_cert_path\" \"$backup_path\""
+                [ $? -ne 0 ] && error "Copy \"$deploy_cert_path\" to \"$backup_path\" in $server failed"
+                run "rm -rf \"$deploy_cert_path\""
+                [ $? -ne 0 ] && error "Remove \"$deploy_cert_path\" in $server failed"
                 success "Backuped cert into $backup_cert_path in $server"
             else
                 alert "\"$deploy_cert_path\" is not found, not need to backup"
@@ -200,6 +202,7 @@ class DeployScriptTemplate(BaseScriptTemplate):
                     run "nginx -s reload"
                     [ $? -ne 0 ] && error "nginx -s reload in $server failed"
                 fi
+            fi
             success "Restarted nginx in $server"
         ''')
 

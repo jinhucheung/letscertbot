@@ -45,7 +45,7 @@ def deploy():
                 script = build_script(server)
                 os.system(script)
             else:
-                print('server host: ' + server.get('host', 'Undefined') + 'has been disable for deployment  in config.json')
+                print('server host: ' + server.get('host', 'Undefined') + ' has been disable for deployment in config.json')
     except Exception as e:
         Logger.error('deploy#deploy raise Exception:' + str(e))
 
@@ -64,10 +64,11 @@ def push(cert_name, server_host):
         server = next((x for x in Config['deploy']['servers'] if x['host'] == server_host), None)
 
         if server is None:
-            raise Exception('Server host: ' + server_host + 'is not found in config.json')
+            raise Exception('Server host: ' + server_host + ' is not found in config.json')
 
         if not server.get('enable', False):
-            print('server host: ' + server_host + 'has been disable for deployment in config.json')
+            print('server host: ' + server_host + ' has been disable for deployment in config.json')
+            return
 
         script = build_script(server, cert_path)
 
