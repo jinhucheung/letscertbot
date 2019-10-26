@@ -3,6 +3,7 @@
 
 import os
 import sys
+import time
 import argparse
 
 root_path = os.path.sep.join([os.path.split(os.path.realpath(__file__))[0], '..'])
@@ -41,9 +42,9 @@ def deploy():
             if not server:
                 continue
             if server.get('enable', False):
-                print('start to deploy server host: ' + server.get('host', 'Undefined'))
                 script = build_script(server)
                 os.system(script)
+                time.sleep(1)
             else:
                 print('server host: ' + server.get('host', 'Undefined') + ' has been disable for deployment in config.json')
     except Exception as e:

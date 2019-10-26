@@ -55,6 +55,7 @@ class DeployScriptTemplate(BaseScriptTemplate):
             alert () { echo "Alert: $1"; }
             success () { echo -e "\033[32mSuccess: $1\033[0m"; }
             cmd_info () { echo -e "\033[33mCommand: $1\033[0m"; }
+            warning () { echo -e "\033[31mWarning: $1\033[0m"; }
             error () { echo -e "\033[31mError: $1\033[0m" >&2; exit 1; }
         ''')
 
@@ -66,6 +67,8 @@ class DeployScriptTemplate(BaseScriptTemplate):
     def build_locale_script(self):
         return textwrap.dedent('''
             server="%(host)s"
+
+            alert "Start to deploy $server"
 
             run () {
                 cmd_info "$1"
@@ -86,15 +89,17 @@ class DeployScriptTemplate(BaseScriptTemplate):
             port="%(port)s"
             password="%(password)s"
 
+            alert "Start to deploy $server"
+
             run () {
                 cmd="$1"
                 use_ssh=${2:-1}
 
                 if [ $use_ssh -eq 1 ]; then
-                    [ $password ] || ssh_options="$ssh_options -o BatchMode=yes"
-                    cmd="ssh $ssh_options -p $port $server '$cmd'"
+                    [ "$password" ] || ssh_options="$ssh_options -o BatchMode=yes"
+                    cmd="ssh $ssh_options -p $port $server $cmd"
                 fi
-                [ $password ] && cmd="sshpass -p $password $cmd"
+                [ "$password" ] && cmd="sshpass -p $password $cmd"
 
                 cmd_info "$cmd"
                 eval $cmd
@@ -105,13 +110,13 @@ class DeployScriptTemplate(BaseScriptTemplate):
             }
 
             # check sshpass if it is password mode
-            if [ $password ]; then
-                alert "Checking if sshpass is installed:"
-                [ "$(command -v sshpass)" ] || error "sshpass is not installed. In order to connect deployment server, you need to install sshpass"
+            if [ "$password" ]; then
+                alert "Checking if sshpass is installed in localhost:"
+                [ "$(command -v sshpass)" ] || error "sshpass is not installed. In order to connect $server, you need to install sshpass"
                 success "sshpass has been installed"
             fi
 
-            alert "Trying connect to server by ssh:"
+            alert "Trying connect to $server by ssh:"
             run "exit 0"
             [ $? -ne 0 ] && error "ssh connect to server $server failed"
             success "Connected to $server"
@@ -124,17 +129,17 @@ class DeployScriptTemplate(BaseScriptTemplate):
 
     def build_migrate_script(self):
         return textwrap.dedent('''
-            alert "Creating tmp directory in server:"
+            alert "Creating tmp directory in $server:"
             run "mkdir -p $tmp_dir"
             [ $? -ne 0 ] && error "mkdir $tmp_dir in $server failed"
             success "Created tmp directory in $server"
 
-            alert "Pushing cert files to server:"
+            alert "Pushing cert files to $server:"
             copy_certs
             [ $? -ne 0 ] && error "Copy $cert_path to $server:$tmp_dir failed"
             success "Pushed cert files to $server:$tmp_dir"
 
-            alert "Cleaning up old backup cert in server:"
+            alert "Cleaning up old backup cert in $server:"
             run "[ -d $backup_cert_path ]"
             if [ $? -eq 0 ]; then
                 run "rm -rf \"$backup_cert_path\""
@@ -144,32 +149,40 @@ class DeployScriptTemplate(BaseScriptTemplate):
                 alert "It is not need to clean up beacause current backup files are not existed"
             fi
 
-            alert "Backuping used cert in server:"
+            alert "Backuping used cert in $server:"
             run "[ -d \"$deploy_cert_path\" ]"
             if [ $? -eq 0 ]; then
                 run "mkdir -p \"$backup_path\""
                 [ $? -ne 0 ] && error "Create \"$backup_path\" in $server failed"
                 run "cp -rL \"$deploy_cert_path\" \"$backup_path\""
                 [ $? -ne 0 ] && error "Copy \"$deploy_cert_path\" to \"$backup_path\" in $server failed"
-                run "rm -rf \"$deploy_cert_path\""
-                [ $? -ne 0 ] && error "Remove \"$deploy_cert_path\" in $server failed"
                 success "Backuped cert into $backup_cert_path in $server"
             else
                 alert "\"$deploy_cert_path\" is not found, not need to backup"
             fi
 
-            alert "Trying create deploy to directory in server:"
-            run "mkdir -p $deploy_path"
-            [ $? -ne 0 ] && error "Create $deploy_path directory in $server failed"
-            success "Create $deploy_path directory in $server"
+            alert "Trying create deploy directory in $server:"
+            run "mkdir -p \"$deploy_cert_path\""
+            [ $? -ne 0 ] && error "Create $deploy_cert_path directory in $server failed"
+            success "Create $deploy_cert_path directory in $server"
 
-            alert "Moving new cert to deploy directory in server:"
-            run "mv -Z \"$tmp_dir/$cert_name\" \"$deploy_cert_path\""
-            [ $? -ne 0 ] && error "Move \"$tmp_dir/$cert_name\" to \"$deploy_cert_path\" in $server failed"
+            alert "Trying move cert files to deploy directory in $server:"
+            run "ls -d $tmp_dir/$cert_name/* | xargs -I %% sh -c \\"basename %% | xargs -i sh -c 'readlink $deploy_cert_path/{} || echo {}' | xargs -i sh -c '[ "{}:0:1" = '/' ] && echo {} || echo $deploy_cert_path/{}' | xargs -i mv -Zf %% {}\\""
+            if [ $? -ne 0 ]; then
+                warning "Move cert files to the symblinks of deploy files in $server failed"
+
+                alert "Trying remove deploy directory in $server:"
+                run "rm -rf \"$deploy_cert_path\""
+                [ $? -ne 0 ] && error "Remove $deploy_cert_path in $server failed"
+
+                alert "Trying overwrite deploy directory in $server:"
+                run "mv -Zf \"$tmp_dir/$cert_name\" \"$deploy_cert_path\""
+                [ $? -ne 0 ] && error "Move \"$tmp_dir/$cert_name\" to \"$deploy_cert_path\" in $server failed"
+            fi
             success "Moved new cert to $deploy_cert_path in $server"
 
-            alert "Removing tmp directory in server:"
-            run "rm -r \"$tmp_dir\""
+            alert "Removing tmp directory in $server:"
+            run "rm -rf \"$tmp_dir\""
             [ $? -ne 0 ] && error "Remove \"$tmp_dir\" in $server failed"
             success "Moved new cert to $tmp_dir in $server"
         ''')
@@ -179,7 +192,7 @@ class DeployScriptTemplate(BaseScriptTemplate):
             return ''
 
         return textwrap.dedent('''
-            alert "Trying restart nginx in server:"
+            alert "Trying restart nginx in $server:"
 
             alert "Checking if nginx is installed:"
             run "command -v nginx > /dev/null"
