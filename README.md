@@ -49,21 +49,21 @@ $ cp config.json.example config.json
 
 Before running Let's Certbot, you have the following configuration to change:
 
-| Name                         | Required | Description                                               | Default               |
-| ---------------------------- | -------- | --------------------------------------------------------- | --------------------- |
-| base.email                   | true     | Email address for important renewal notifications         |                       |
-| api.aliyun.access_key_id     | true     | AccessKey ID of Aliyun account                            |                       |
-| api.aliyun.access_key_secret | true     | AccessKey Secret of Aliyun account                        |                       |
-| log.enable                   | false    | Whether to enable log tracker                             | false                 |
-| log.logfile                  | false    | The path of log file                                      | ./log/application.log |
-| deploy.servers               | false    | The deployment servers                                    |                       |
-| deploy.server.enable         | false    | Whether to run deployment script for server               | false                 |
-| deploy.server.host           | false    | The host of deployment server, required on deploy         |                       |
-| deploy.server.port           | false    | The port of deployment server SSH daemon                  | 22                    |
-| deploy.server.user           | false    | The user of deployment server uses SSH login, run command | root                  |
-| deploy.server.password       | false    | The password of deployment user                           |                       |
-| deploy.server.deploy_to      | false    | The stored path of certificate in server                  | /etc/letsencrypt/live |
-| deploy.server.restart_nginx  | false    | Whether to restart nginx in server                        | false                 |
+| Name                         | Required | Description                                                                          | Default               |
+| ---------------------------- | -------- | ------------------------------------------------------------------------------------ | --------------------- |
+| base.email                   | true     | Email address for important renewal notifications                                    |                       |
+| api.aliyun.access_key_id     | true     | AccessKey ID of Aliyun account                                                       |                       |
+| api.aliyun.access_key_secret | true     | AccessKey Secret of Aliyun account                                                   |                       |
+| log.enable                   | false    | Whether to enable log tracker                                                        | false                 |
+| log.logfile                  | false    | The path of log file                                                                 | ./log/application.log |
+| deploy.servers               | false    | The deployment servers                                                               |                       |
+| deploy.server.enable         | false    | Whether to run deployment script for server                                          | false                 |
+| deploy.server.host           | false    | The host of deployment server, set "localhost" for local server, required on deploy. |                       |
+| deploy.server.port           | false    | The port of remote server SSH daemon                                                 | 22                    |
+| deploy.server.user           | false    | The user of remote server uses SSH login, run command                                | root                  |
+| deploy.server.password       | false    | The password of remote user                                                          |                       |
+| deploy.server.deploy_to      | false    | The stored path of certificate in server                                             | /etc/letsencrypt/live |
+| deploy.server.restart_nginx  | false    | Whether to restart nginx in server                                                   | false                 |
 
 In addition, `tlds.txt` contains some top level domains(TLD) and second level domains(SLD) for separating subdomain and main domain. If the TLD or SLD of your domain is not existed in `tlds.txt`, you need to append it in list.
 
