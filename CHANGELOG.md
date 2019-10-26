@@ -10,4 +10,4 @@
 
 **Fixed bugs:**
 
-- Can't renew certificate if `deploy.server.deploy_to` set `/etc/letsencrypt/live` on local deployment [\#3](https://github.com/jinhucheung/letscertbot/pull/3)
+- Can't renew certificate if `deploy.server.deploy_to` set `/etc/letsencrypt/live` on local deployment [\#4](https://github.com/jinhucheung/letscertbot/pull/4)

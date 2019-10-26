@@ -125,7 +125,7 @@ def main():
     parser.add_argument('-c', '--cleanup', help='cleanup hook', action='store_true')
     parser.add_argument('-t', '--test', help='test DNS API', action='store_true')
     parser.add_argument('--api', help='api type, default: aliyun', default='aliyun')
-    parser.add_argument('--domain', help='a domain for test DNS API')
+    parser.add_argument('-d', '--domain', help='a domain for test DNS API')
 
     args = parser.parse_args()
 
