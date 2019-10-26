@@ -96,8 +96,8 @@ class DeployScriptTemplate(BaseScriptTemplate):
                 use_ssh=${2:-1}
 
                 if [ $use_ssh -eq 1 ]; then
-                    [ "$password" ] || ssh_options="$ssh_options -o BatchMode=yes"
-                    cmd="ssh $ssh_options -p $port $server '$cmd'"
+                    [ "$password" ] || ssh_opts="$ssh_options -o BatchMode=yes"
+                    cmd="ssh $ssh_opts -p $port $server '$cmd'"
                 fi
                 [ "$password" ] && cmd="sshpass -p $password $cmd"
 
