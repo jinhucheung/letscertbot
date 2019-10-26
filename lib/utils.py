@@ -7,6 +7,9 @@ import sys
 root_path = os.path.sep.join([os.path.split(os.path.realpath(__file__))[0], '..'])
 tlds_path = os.path.sep.join([root_path, 'tlds.txt'])
 
+sys.path.append(root_path)
+from lib import Config
+
 # @example extract_domain('m.domain.com') #=> ('m', 'domain.com')
 def extract_domain(domain):
     parts = domain.split('.')
@@ -22,11 +25,33 @@ def extract_domain(domain):
 
     return ('', domain)
 
+def is_enable_deployment():
+    try:
+        deploy = Config.get('deploy', {})
+        servers = deploy.get('servers', [])
+
+        for server in servers:
+            if server and server.get('enable', False):
+                return True
+        return False
+    except Exception as e:
+        print("utils#is_enable_deployment raise Exception: " + str(e))
+        return False
+
+def is_localhost(host):
+    return host in ['127.0.0.1', '0.0.0.0', '::1', 'localhost']
 
 if __name__ == '__main__':
     domains = sys.argv[1:]
 
+    print('Testing extract_domain...')
     print('(sudomain, maindomain)')
-
     for domain in domains:
         print(extract_domain(domain))
+
+    print('Testing is_enable_deployment...')
+    print(is_enable_deployment())
+
+    print('Testing is_localhost...')
+    print(is_localhost('127.0.0.1'))
+    print(is_localhost('127.0.0.2'))
