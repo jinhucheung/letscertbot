@@ -16,6 +16,12 @@
     "servers": [
       {
         "enable": false,
+        "host": "localhost",
+        "deploy_to": "",
+        "restart_nginx": false
+      },
+      {
+        "enable": false,
         "host": "192.168.1.1",
         "port": 22,
         "user": "root",
