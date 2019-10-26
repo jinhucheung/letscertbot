@@ -84,7 +84,7 @@ class DeployScriptTemplate(BaseScriptTemplate):
 
     def build_remote_script(self):
         return textwrap.dedent('''
-            ssh_options="-o LogLevel=ERROR -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+            ssh_options="-o LogLevel=ERROR -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=60"
             server="%(user)s@%(host)s"
             port="%(port)s"
             password="%(password)s"
@@ -97,7 +97,7 @@ class DeployScriptTemplate(BaseScriptTemplate):
 
                 if [ $use_ssh -eq 1 ]; then
                     [ "$password" ] || ssh_options="$ssh_options -o BatchMode=yes"
-                    cmd="ssh $ssh_options -p $port $server $cmd"
+                    cmd="ssh $ssh_options -p $port $server '$cmd'"
                 fi
                 [ "$password" ] && cmd="sshpass -p $password $cmd"
 
@@ -166,18 +166,27 @@ class DeployScriptTemplate(BaseScriptTemplate):
             [ $? -ne 0 ] && error "Create $deploy_cert_path directory in $server failed"
             success "Create $deploy_cert_path directory in $server"
 
-            alert "Trying move cert files to deploy directory in $server:"
-            run "ls -d $tmp_dir/$cert_name/* | xargs -I %% sh -c \\"basename %% | xargs -i sh -c 'readlink $deploy_cert_path/{} || echo {}' | xargs -i sh -c '[ "{}:0:1" = '/' ] && echo {} || echo $deploy_cert_path/{}' | xargs -i mv -Zf %% {}\\""
+            alert "Trying move cert files to the symblinks of deploy files in $server:"
+            symblink_pipeline='basename %% | xargs -i sh -c \\"readlink $deploy_cert_path/{} || echo {}\\" | xargs -i sh -c \\"[ \\"{}:0:1\\" = / ] && echo {} || echo $deploy_cert_path/{}\\" | xargs -i mv -Zf %% {}'
+            symblink_pipeline=$(echo $symblink_pipeline | sed "s~\$deploy_cert_path~$deploy_cert_path~g")
+            run "ls -d $tmp_dir/$cert_name/* | xargs -I %% sh -c \\"$symblink_pipeline\\""
             if [ $? -ne 0 ]; then
                 warning "Move cert files to the symblinks of deploy files in $server failed"
 
-                alert "Trying remove deploy directory in $server:"
-                run "rm -rf \"$deploy_cert_path\""
-                [ $? -ne 0 ] && error "Remove $deploy_cert_path in $server failed"
+                alert "Trying move current deploy directory to tmp directory in $server:"
+                run "mv -Z \"$deploy_cert_path\" \"$deploy_cert_path-$timestamp\""
+                [ $? -ne 0 ] && error "Move current deploy directory to tmp directory in $server failed"
 
                 alert "Trying overwrite deploy directory in $server:"
-                run "mv -Zf \"$tmp_dir/$cert_name\" \"$deploy_cert_path\""
-                [ $? -ne 0 ] && error "Move \"$tmp_dir/$cert_name\" to \"$deploy_cert_path\" in $server failed"
+                run "mv -Z \"$tmp_dir/$cert_name\" \"$deploy_cert_path\""
+                if [ $? -ne 0 ]; then
+                    run "mv -Z \"$deploy_cert_path-$timestamp\" \"$deploy_cert_path\""
+                    error "Move \"$tmp_dir/$cert_name\" to \"$deploy_cert_path\" in $server failed"
+                fi
+
+                alert "Trying remove tmp deploy directory in $server:"
+                run "rm -rf \"$deploy_cert_path-$timestamp\""
+                [ $? -ne 0 ] && error "Remove \"$deploy_cert_path-$timestamp\" in $server failed"
             fi
             success "Moved new cert to $deploy_cert_path in $server"
 
