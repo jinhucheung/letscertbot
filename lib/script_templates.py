@@ -218,8 +218,8 @@ class DeployScriptTemplate(BaseScriptTemplate):
             else
                 run "command -v service > /dev/null"
                 if [ $? -eq 0 ]; then
-                    run "service reload nginx"
-                    [ $? -ne 0 ] && error "Restart nginx by 'service reload nginx' in $server failed"
+                    run "service nginx restart"
+                    [ $? -ne 0 ] && error "Restart nginx by 'service nginx restart' in $server failed"
                 else
                     run "nginx -s reload"
                     [ $? -ne 0 ] && error "nginx -s reload in $server failed"
