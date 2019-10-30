@@ -129,6 +129,11 @@ class DeployScriptTemplate(BaseScriptTemplate):
 
     def build_migrate_script(self):
         return textwrap.dedent('''
+            overmv='mv'
+            alert "Check mv if it is support '-Z' options in $server:"
+            run "mv --help | grep \\"\-Z\\""
+            [ $? -eq 0 ] && overmv="$overmv -Z"
+
             alert "Creating tmp directory in $server:"
             run "mkdir -p $tmp_dir"
             [ $? -ne 0 ] && error "mkdir $tmp_dir in $server failed"
@@ -167,20 +172,20 @@ class DeployScriptTemplate(BaseScriptTemplate):
             success "Create $deploy_cert_path directory in $server"
 
             alert "Trying move cert files to the symblinks of deploy files in $server:"
-            symblink_pipeline='basename %% | xargs -i sh -c \\"readlink $deploy_cert_path/{} || echo {}\\" | xargs -i sh -c \\"[ \\"{}:0:1\\" = / ] && echo {} || echo $deploy_cert_path/{}\\" | xargs -i mv -Zf %% {}'
-            symblink_pipeline=$(echo $symblink_pipeline | sed "s~\$deploy_cert_path~$deploy_cert_path~g")
+            symblink_pipeline='basename %% | xargs -i sh -c \\"readlink $deploy_cert_path/{} || echo {}\\" | xargs -i sh -c \\"[ \\"{}:0:1\\" = / ] && echo {} || echo $deploy_cert_path/{}\\" | xargs -i $overmv -f %% {}'
+            symblink_pipeline=$(echo $symblink_pipeline | sed "s~\$deploy_cert_path~$deploy_cert_path~g" | sed "s~\$overmv~$overmv~g")
             run "ls -d $tmp_dir/$cert_name/* | xargs -I %% sh -c \\"$symblink_pipeline\\""
             if [ $? -ne 0 ]; then
                 warning "Move cert files to the symblinks of deploy files in $server failed"
 
                 alert "Trying move current deploy directory to tmp directory in $server:"
-                run "mv -Z \"$deploy_cert_path\" \"$deploy_cert_path-$timestamp\""
+                run "$overmv \"$deploy_cert_path\" \"$deploy_cert_path-$timestamp\""
                 [ $? -ne 0 ] && error "Move current deploy directory to tmp directory in $server failed"
 
                 alert "Trying overwrite deploy directory in $server:"
-                run "mv -Z \"$tmp_dir/$cert_name\" \"$deploy_cert_path\""
+                run "$overmv \"$tmp_dir/$cert_name\" \"$deploy_cert_path\""
                 if [ $? -ne 0 ]; then
-                    run "mv -Z \"$deploy_cert_path-$timestamp\" \"$deploy_cert_path\""
+                    run "$overmv \"$deploy_cert_path-$timestamp\" \"$deploy_cert_path\""
                     error "Move \"$tmp_dir/$cert_name\" to \"$deploy_cert_path\" in $server failed"
                 fi
 
