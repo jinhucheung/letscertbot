@@ -6,6 +6,10 @@
     "aliyun": {
       "access_key_id": "your_access_key_id",
       "access_key_secret": "your_access_key_secret"
+    },
+    "qcloud": {
+      "secret_id": "your_secret_id",
+      "secret_key": "your_secret_key"
     }
   },
   "log": {
