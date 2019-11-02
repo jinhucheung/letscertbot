@@ -11,6 +11,7 @@ On dns challenge, you need to set a TXT DNS record with specific contents on dom
 Supports domain name registrar at persent:
 
 - [Aliyun](https://www.aliyun.com/)
+- [Tencent Cloud](https://cloud.tencent.com/)
 
 ## Installation
 
@@ -52,8 +53,11 @@ Before running Let's Certbot, you have the following configuration to change:
 | Name                         | Required | Description                                                                          | Default               |
 | ---------------------------- | -------- | ------------------------------------------------------------------------------------ | --------------------- |
 | base.email                   | true     | Email address for important renewal notifications                                    |                       |
-| api.aliyun.access_key_id     | true     | AccessKey ID of Aliyun account                                                       |                       |
-| api.aliyun.access_key_secret | true     | AccessKey Secret of Aliyun account                                                   |                       |
+| api                          | true     | Provide access keys for supported domain name registrar                              |                       |
+| api.aliyun.access_key_id     | false    | AccessKey ID of Aliyun account                                                       |                       |
+| api.aliyun.access_key_secret | false    | AccessKey Secret of Aliyun account                                                   |                       |
+| api.qcloud.secret_id         | false    | SecretId of Tencent Cloud account                                                    |                       |
+| api.qcloud.secret_key        | false    | SecretKey Secret of Tencent Cloud account                                            |                       |
 | log.enable                   | false    | Whether to enable log tracker                                                        | false                 |
 | log.logfile                  | false    | The path of log file                                                                 | ./log/application.log |
 | deploy.servers               | false    | The deployment servers                                                               |                       |

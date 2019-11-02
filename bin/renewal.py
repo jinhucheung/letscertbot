@@ -19,8 +19,8 @@ certbot_cmd_template = '''
     --agree-tos \
     --manual \
     --manual-public-ip-logging-ok \
-    --manual-auth-hook "python %(manual_path)s --auth" \
-    --manual-cleanup-hook "python %(manual_path)s --cleanup" \
+    --manual-auth-hook "python %(manual_path)s --auth --api %(api)s" \
+    --manual-cleanup-hook "python %(manual_path)s --cleanup --api %(api)s" \
     %(deploy_hook)s \
     %(cert_names)s \
     %(force_renewal)s
@@ -38,6 +38,7 @@ def run(args):
 
     certbot_cmd = certbot_cmd_template % {
         'manual_path': manual_path,
+        'api': args.api,
         'deploy_hook': deploy_hook,
         'cert_names': cert_names,
         'force_renewal': force_renewal
@@ -52,6 +53,7 @@ def main():
 
     parser.add_argument('-f', '--force', help='force renewal', default=False, action='store_true')
     parser.add_argument('-c', '--certs', help='certificates, e.g. domain.com', default=[], nargs='*')
+    parser.add_argument('--api', help='api type, default: aliyun', default='aliyun')
 
     args = parser.parse_args()
 

@@ -90,20 +90,16 @@ def test(domain, api_type = 'aliyun'):
 
 def __get_api_client(api_type = 'aliyun'):
     try:
-        switch = {
-            'aliyun': __get_aliyun_client
-        }
-        return switch[api_type]()
+        key = Config['api'][api_type]
+
+        if 'aliyun' == api_type:
+            return api.Aliyun(key['access_key_id'], key['access_key_secret'])
+        elif 'qcloud' == api_type:
+            return api.Qcloud(key['secret_id'], key['secret_key'])
     except KeyError as e:
         print('The ' + api_type + ' DNS API is not be supported at persent')
         Logger.error('manual#get_api raise KeyError: ' + str(e))
         sys.exit()
-
-def __get_aliyun_client():
-    access_key_id = Config['api']['aliyun']['access_key_id']
-    access_key_secret = Config['api']['aliyun']['access_key_secret']
-
-    return api.Aliyun(access_key_id, access_key_secret)
 
 def __extract_maindomain_and_challenge(domain):
     sudomain, maindomain = Utils.extract_domain(domain)
