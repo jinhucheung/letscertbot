@@ -7,5 +7,4 @@ log/*
 __pycache__
 *.pyc
 
-config.ini
 config.json
