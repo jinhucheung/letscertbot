@@ -37,7 +37,7 @@ $ cp config.json.example config.json
 Run Let's Certbot with Docker:
 
 ```
-$ sudo docker run --rm --name letscertbot -v "$your_letscertbot_home./config.json:/app/config.json" -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/lib/letsencrypt:/var/lib/letsencrypt" jimcheung/letscertbot
+$ sudo docker run --rm --name letscertbot -v "$your_letscertbot_home/config.json:/app/config.json" -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/lib/letsencrypt:/var/lib/letsencrypt" jimcheung/letscertbot
 ```
 
 You can run Let's Certbot with Compose if Docker Compose is installed:
