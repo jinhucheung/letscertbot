@@ -15,7 +15,44 @@ Supports domain name registrar at persent:
 
 ## Installation
 
-Let's Certbot as a Certbot tool requires Python 2.7 or 3.4+ running on a UNIX-like operation system.
+Let's Certbot as a Certbot tool supports docker and non-docker environments.
+
+### Downloading Repository
+
+Clone this repository to get Let's Certbot:
+
+```
+$ git clone git@github.com:jinhucheung/letscertbot.git
+```
+
+Then copy configurations:
+
+```
+$ cd letscertbot
+$ cp config.json.example config.json
+```
+
+### Installing with Docker
+
+Run Let's Certbot with Docker:
+
+```
+$ sudo docker run --rm --name letscertbot \
+                  -v "./config.json:/app/config.json" \
+                  -v "/etc/letsencrypt:/etc/letsencrypt" \
+                  -v "/var/lib/letsencrypt:/var/lib/letsencrypt"
+                  jimcheung/letscertbot
+```
+
+You can run Let's Certbot with Compose if Docker Compose is installed:
+
+```
+$ sudo docker-compose run --rm app
+```
+
+### Installing without Docker
+
+Let's Certbot requires Python 2.7 or 3.4+ running on a UNIX-like operation system.
 
 First, you need to confirm if python is installed:
 
@@ -29,19 +66,6 @@ After installing Certbot, run Certbot with root:
 
 ```
 $ sudo certbot --version
-```
-
-Clone this repository to get Let's Certbot:
-
-```
-$ git clone git@github.com:jinhucheung/letscertbot.git
-```
-
-Then copy configurations:
-
-```
-$ cd letscertbot
-$ cp config.json.example config.json
 ```
 
 ## Usage
@@ -76,6 +100,10 @@ In addition, `tlds.txt` contains some top level domains(TLD) and second level do
 Before obtaining certificate, you can run manual script (`manual.py`) to test DNS API with with your access key:
 
 ```
+# Running with docker
+$ sudo docker-compose run --rm app manual --test --domain your.example.com --api aliyun
+
+# Running without docker
 $ sudo python ./bin/manual.py --test --domain your.example.com --api aliyun
 ```
 
@@ -86,6 +114,10 @@ The script will place `_acme-challenge` TXT record under your domain via specifi
 Run the obtainment script (`obtain.py`) with root for obtaining certificate:
 
 ```
+# Running with docker
+$ sudo docker-compose run --rm app obtain -d your.example.com *.your.example.com
+
+# Running without docker
 $ sudo python ./bin/obtain.py -d your.example.com *.your.example.com
 ```
 
@@ -94,6 +126,10 @@ Then you will get a wildcard certificate names `your.example.com` in `/etc/letse
 You can specify certificate name with `--cert` argument:
 
 ```
+# Running with docker
+$ sudo docker-compose run --rm app obtain -d x.example.com y.example.com --cert xny.example.com
+
+# Running without docker
 $ sudo python ./bin/obtain.py -d x.example.com y.example.com --cert xny.example.com
 ```
 
@@ -102,6 +138,10 @@ $ sudo python ./bin/obtain.py -d x.example.com y.example.com --cert xny.example.
 Renew certificates with the renewal script (`renewal.py`):
 
 ```
+# Running with docker
+$ sudo docker-compose run --rm app renewal
+
+# Running without docker
 $ sudo python ./bin/renewal.py
 ```
 
@@ -110,6 +150,10 @@ Then Certbot will try renew all certificates which will be expired soon.
 You can add renewal script as schedule task to `crontab`:
 
 ```
+# Running with docker
+0 0 */7 * * sudo docker-compose -f $your_letscertbot_home/docker-compose.yml run --rm app renewal > /var/log/letscertbot-renewal.log 2>&1
+
+# Running without docker
 0 0 */7 * * sudo $your_letscertbot_home/bin/renewal.py > /var/log/letscertbot-renewal.log 2>&1
 ```
 
@@ -118,6 +162,10 @@ The task will run renewal script every 7 days.
 If you need to force renew specified certificates, provide `--force` and `--certs` arguments:
 
 ```
+# Running with docker
+$ sudo docker-compose run --rm app renewal --certs xny.example.com --force
+
+# Running without docker
 $ sudo python ./bin/renewal.py --certs xny.example.com --force
 ```
 
@@ -132,16 +180,26 @@ In order to add certificate to `deploy.server.deploy_to` or restart nginx, Let's
 You can get deployment script by running the following command:
 
 ```
+# Running with docker
+$ sudo docker-compose run --rm app deploy --check
+
+# Running without docker
 $ sudo python ./bin/deploy.py --check
 ```
 
 And push certificate to server:
 
 ```
+# Running with docker
+$ sudo docker-compose run --rm app deploy --push --cert $certificate_name --server $server_host
+
+# Running without docker
 $ sudo python ./bin/deploy.py --push --cert $certificate_name --server $server_host
 ```
 
 **Note**: If `deploy.server` enables SELinux in enforcing mode, you need to confirm that nginx has access to the SElinux security context of `deploy.server.deploy_to`.
+
+**Note**: If you run Let's Certbot via container and restart nginx in local server, you should set local server as remote.
 
 ## Thanks
 
