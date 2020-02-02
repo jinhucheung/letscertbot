@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.3.0](https://github.com/jinhucheung/letscertbot/tree/v0.3.0) (2020-02-02)
+
+[Full Changelog](https://github.com/jinhucheung/letscertbot/compare/v0.2.0..v0.3.0)
+
+**Breaking changes:**
+
+- add Docker support [\#8](https://github.com/jinhucheung/letscertbot/pull/8)
+
 ## [v0.2.0](https://github.com/jinhucheung/letscertbot/tree/v0.2.0) (2019-10-26)
 
 [Full Changelog](https://github.com/jinhucheung/letscertbot/compare/v0.1.0..v0.2.0)
