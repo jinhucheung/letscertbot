@@ -96,8 +96,8 @@ class DeployScriptTemplate(BaseScriptTemplate):
                 use_ssh=${2:-1}
 
                 if [ $use_ssh -eq 1 ]; then
-                    [ "$password" ] || ssh_opts="$ssh_options -o BatchMode=yes"
-                    cmd="ssh $ssh_opts -p $port $server '$cmd'"
+                    [ "$password" ] || ssh_batch_mode="-o BatchMode=yes"
+                    cmd="ssh $ssh_options $ssh_batch_mode -p $port $server '$cmd'"
                 fi
                 [ "$password" ] && cmd="sshpass -p $password $cmd"
 
@@ -131,7 +131,12 @@ class DeployScriptTemplate(BaseScriptTemplate):
         return textwrap.dedent('''
             overmv='mv'
             alert "Check mv if it is support '-Z' options in $server:"
-            run "mv --help | grep \\"\-Z\\""
+            run "command -v man > /dev/null"
+            if [ $? -eq 0 ]; then
+                run "man mv | grep \\"\-Z\\""
+            else
+                run "mv --help | grep \\"\-Z\\""
+            fi
             [ $? -eq 0 ] && overmv="$overmv -Z"
 
             alert "Creating tmp directory in $server:"

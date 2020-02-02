@@ -1,7 +1,7 @@
 #!/bin/sh
 
 usage() {
-  echo "usage: $0 obtain|renewal|manual|deploy [OPTS ...]"
+  echo "usage: $0 obtain|renewal|manual|deploy [options]"
   echo
   echo "example: $0 obtain -d domain.com *.domain.com"
 }

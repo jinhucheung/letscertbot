@@ -7,3 +7,5 @@ services:
     image: letscertbot
     volumes:
       - ./config.json:/app/config.json
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/lib/letsencrypt:/var/lib/letsencrypt

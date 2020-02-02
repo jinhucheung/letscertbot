@@ -13,7 +13,44 @@ Let's Certbot 是一个基于 [Certbot](https://certbot.eff.org/) 用于自动�
 
 ## 安装
 
-Let's Certbot 作为一个 Certbot 工具，它与 Certbot 执行环境一致，要求执行在类 UNIX 操作系统上且需要 Python 2.7 或 3.4+。
+Let's Certbot 作为一个 Certbot 工具，支持 Docker 容器或非容器方式安装。
+
+### 下载仓库
+
+首先，克隆本仓库以获取 Let's Certbot:
+
+```
+$ git clone git@github.com:jinhucheung/letscertbot.git
+```
+
+然后拷贝配置文件:
+
+```
+$ cd letscertbot
+$ cp config.json.example config.json
+```
+
+### 容器安装
+
+你可以通过 Docker 来执行 Let's Certbot:
+
+```
+$ sudo docker run --rm --name letscertbot \
+                  -v "./config.json:/app/config.json" \
+                  -v "/etc/letsencrypt:/etc/letsencrypt" \
+                  -v "/var/lib/letsencrypt:/var/lib/letsencrypt"
+                  jimcheung/letscertbot
+```
+
+如果你已安装 Docker Compose, 可以通过 Compose 执行:
+
+```
+$ sudo docker-compose run --rm app
+```
+
+### 非容器安装
+
+Let's Certbot 与 Certbot 执行环境一致，要求执行在类 UNIX 操作系统上且需要 Python 2.7 或 3.4+。
 
 首先，你需要确认 Python 是否已经安装:
 
@@ -27,19 +64,6 @@ $ python --version
 
 ```
 $ sudo certbot --version
-```
-
-克隆本仓库以获取 Let's Certbot:
-
-```
-$ git clone git@github.com:jinhucheung/letscertbot.git
-```
-
-然后拷贝配置文件:
-
-```
-$ cd letscertbot
-$ cp config.json.example config.json
 ```
 
 ## 使用
@@ -74,6 +98,10 @@ $ cp config.json.example config.json
 获取证书前，你可以执行 manual 脚本 (`manual.py`) 用你的 access key 测试 DNS API:
 
 ```
+# 容器方式
+$ sudo docker-compose run --rm app manual --test --domain your.example.com --api aliyun
+
+# 非容器方式
 $ sudo python ./bin/manual.py --test --domain your.example.com --api aliyun
 ```
 
@@ -84,6 +112,10 @@ $ sudo python ./bin/manual.py --test --domain your.example.com --api aliyun
 使用 root 执行 obtainment 脚本 (`obtain.py`) 以获取证书:
 
 ```
+# 容器方式
+$ sudo docker-compose run --rm app obtain -d your.example.com *.your.example.com
+
+# 非容器方式
 $ sudo python ./bin/obtain.py -d your.example.com *.your.example.com
 ```
 
@@ -92,6 +124,10 @@ $ sudo python ./bin/obtain.py -d your.example.com *.your.example.com
 你可以提供 `--cert` 参数指定证书名称:
 
 ```
+# 容器方式
+$ sudo docker-compose run --rm app obtain -d x.example.com y.example.com --cert xny.example.com
+
+# 非容器方式
 $ sudo python ./bin/obtain.py -d x.example.com y.example.com --cert xny.example.com
 ```
 
@@ -100,6 +136,10 @@ $ sudo python ./bin/obtain.py -d x.example.com y.example.com --cert xny.example.
 使用 renewal 脚本 (`renewal.py`) 为证书续期:
 
 ```
+# 容器方式
+$ sudo docker-compose run --rm app renewal
+
+# 非容器方式
 $ sudo python ./bin/renewal.py
 ```
 
@@ -108,6 +148,10 @@ Certbot 将为所有即将到期的证书续期。
 你可以设置一个计划任务，将 renewal 脚本添加到 `crontab` 中:
 
 ```
+# 容器方式
+0 0 */7 * * sudo docker-compose -f $your_letscertbot_home/docker-compose.yml run --rm app renewal > /var/log/letscertbot-renewal.log 2>&1
+
+# 非容器方式
 0 0 */7 * * sudo $your_letscertbot_home/bin/renewal.py > /var/log/letscertbot-renewal.log 2>&1
 ```
 
@@ -116,6 +160,10 @@ Certbot 将为所有即将到期的证书续期。
 如果你需要强制为指定的证书续期，可以提供 `--force` and `--certs` 参数:
 
 ```
+# 容器方式
+$ sudo docker-compose run --rm app renewal --certs xny.example.com --force
+
+# 非容器方式
 $ sudo python ./bin/renewal.py --certs xny.example.com --force
 ```
 
@@ -130,16 +178,26 @@ Let's Certbot 通过 SSH 为远程服务器部署证书，这意味着你执行 
 你可以通过执行下面命令获取 deployment 脚本:
 
 ```
+# 容器方式
+$ sudo docker-compose run --rm app deploy --check
+
+# 非容器方式
 $ sudo python ./bin/deploy.py --check
 ```
 
 如果需要推送证书到配置中的服务器，可以执行:
 
 ```
+# 容器方式
+$ sudo docker-compose run --rm app deploy --push --cert $certificate_name --server $server_host
+
+# 非容器方式
 $ sudo python ./bin/deploy.py --push --cert $certificate_name --server $server_host
 ```
 
 **Note**: 如果 `deploy.server` 以强制模式启动了 SELinux, 你需要确认 nginx 有权限访问 `deploy.server.deploy_to` 的 SELinux 安全上下文。
+
+**Note**: 如果你以容器方式运行 Let's Certbot，同时需要在部署证书后重启本地 nginx 服务，则应该使用远程服务器方式配置本地服务器。
 
 ## 致谢
 
