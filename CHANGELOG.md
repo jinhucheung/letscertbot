@@ -6,7 +6,7 @@
 
 **Breaking changes:**
 
-- change API module to DNS module [\#12](https://github.com/jinhucheung/letscertbot/pull/12)
+- change API module to DNS module [\#11](https://github.com/jinhucheung/letscertbot/issues/11)
 
 ## [v0.3.0](https://github.com/jinhucheung/letscertbot/tree/v0.3.0) (2020-02-02)
 
