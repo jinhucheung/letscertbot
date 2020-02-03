@@ -2,7 +2,7 @@
   "base": {
     "email": "your_email"
   },
-  "api": {
+  "dns": {
     "aliyun": {
       "access_key_id": "your_access_key_id",
       "access_key_secret": "your_access_key_secret"

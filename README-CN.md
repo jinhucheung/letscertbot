@@ -71,11 +71,11 @@ $ sudo certbot --version
 | 名称                         | 必须  | 描述                                                               | 默认                  |
 | ---------------------------- | ----- | ------------------------------------------------------------------ | --------------------- |
 | base.email                   | true  | 邮箱地址，用于接收续期等通知                                       |                       |
-| api                          | true  | 提供任一个域名服务商的访问密钥                                     |                       |
-| api.aliyun.access_key_id     | false | 阿里云帐号的 AccessKey ID                                          |                       |
-| api.aliyun.access_key_secret | false | 阿里云帐号的 AccessKey Secret                                      |                       |
-| api.qcloud.secret_id         | false | 腾讯云帐号的 SecretId                                              |                       |
-| api.qcloud.secret_key        | false | 腾讯云帐号的 SecretKey                                             |                       |
+| dns                          | true  | 提供任一个域名服务商的访问密钥                                     |                       |
+| dns.aliyun.access_key_id     | false | 阿里云帐号的 AccessKey ID                                          |                       |
+| dns.aliyun.access_key_secret | false | 阿里云帐号的 AccessKey Secret                                      |                       |
+| dns.qcloud.secret_id         | false | 腾讯云帐号的 SecretId                                              |                       |
+| dns.qcloud.secret_key        | false | 腾讯云帐号的 SecretKey                                             |                       |
 | log.enable                   | false | 是否启用日志跟踪                                                   | false                 |
 | log.logfile                  | false | 日志文件路径                                                       | ./log/application.log |
 | deploy.servers               | false | 部署服务器列表                                                     |                       |
@@ -95,10 +95,10 @@ $ sudo certbot --version
 
 ```
 # 容器方式
-$ sudo docker-compose run --rm app manual --test --domain your.example.com --api aliyun
+$ sudo docker-compose run --rm app manual --test --domain your.example.com --dns aliyun
 
 # 非容器方式
-$ sudo python ./bin/manual.py --test --domain your.example.com --api aliyun
+$ sudo python ./bin/manual.py --test --domain your.example.com --dns aliyun
 ```
 
 这个脚本将会通过指定的 DNS API 添加 `_acme-challenge` TXT 记录到你的域名下。

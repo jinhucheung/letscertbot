@@ -3,5 +3,5 @@
 
 __all__ = ['Aliyun', 'Qcloud']
 
-from api.aliyun import Aliyun
-from api.qcloud import Qcloud
+from dns.aliyun import Aliyun
+from dns.qcloud import Qcloud

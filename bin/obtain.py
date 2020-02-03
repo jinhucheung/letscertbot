@@ -24,8 +24,8 @@ certbot_cmd_template = '''
     --server https://acme-v02.api.letsencrypt.org/directory \
     --manual \
     --manual-public-ip-logging-ok \
-    --manual-auth-hook "python %(manual_path)s --auth --api %(api)s" \
-    --manual-cleanup-hook "python %(manual_path)s --cleanup --api %(api)s" \
+    --manual-auth-hook "python %(manual_path)s --auth --dns %(dns)s" \
+    --manual-cleanup-hook "python %(manual_path)s --cleanup --dns %(dns)s" \
     %(deploy_hook)s \
     %(domains)s
 '''
@@ -45,7 +45,7 @@ def run(args):
         'cert_name': cert_name,
         'force_renewal': force_renewal,
         'manual_path': manual_path,
-        'api': args.api,
+        'dns': args.dns,
         'deploy_hook': deploy_hook,
         'domains': domains
     }
@@ -60,7 +60,7 @@ def main():
     parser.add_argument('-d', '--domains', help='domain list', required=True, nargs='+')
     parser.add_argument('-c', '--cert', help='certificate name, e.g. domain.com')
     parser.add_argument('-f', '--force', help='force renewal', default=False, action='store_true')
-    parser.add_argument('--api', help='api type, default: aliyun', default='aliyun')
+    parser.add_argument('--dns', help='dns type, default: aliyun', default='aliyun')
 
     args = parser.parse_args()
 

@@ -73,11 +73,11 @@ Before running Let's Certbot, you have the following configuration to change:
 | Name                         | Required | Description                                                                          | Default               |
 | ---------------------------- | -------- | ------------------------------------------------------------------------------------ | --------------------- |
 | base.email                   | true     | Email address for important renewal notifications                                    |                       |
-| api                          | true     | Provide access keys for supported domain name registrar                              |                       |
-| api.aliyun.access_key_id     | false    | AccessKey ID of Aliyun account                                                       |                       |
-| api.aliyun.access_key_secret | false    | AccessKey Secret of Aliyun account                                                   |                       |
-| api.qcloud.secret_id         | false    | SecretId of Tencent Cloud account                                                    |                       |
-| api.qcloud.secret_key        | false    | SecretKey Secret of Tencent Cloud account                                            |                       |
+| dns                          | true     | Provide access keys for supported domain name registrar                              |                       |
+| dns.aliyun.access_key_id     | false    | AccessKey ID of Aliyun account                                                       |                       |
+| dns.aliyun.access_key_secret | false    | AccessKey Secret of Aliyun account                                                   |                       |
+| dns.qcloud.secret_id         | false    | SecretId of Tencent Cloud account                                                    |                       |
+| dns.qcloud.secret_key        | false    | SecretKey Secret of Tencent Cloud account                                            |                       |
 | log.enable                   | false    | Whether to enable log tracker                                                        | false                 |
 | log.logfile                  | false    | The path of log file                                                                 | ./log/application.log |
 | deploy.servers               | false    | The deployment servers                                                               |                       |
@@ -97,10 +97,10 @@ Before obtaining certificate, you can run manual script (`manual.py`) to test DN
 
 ```
 # Running with docker
-$ sudo docker-compose run --rm app manual --test --domain your.example.com --api aliyun
+$ sudo docker-compose run --rm app manual --test --domain your.example.com --dns aliyun
 
 # Running without docker
-$ sudo python ./bin/manual.py --test --domain your.example.com --api aliyun
+$ sudo python ./bin/manual.py --test --domain your.example.com --dns aliyun
 ```
 
 The script will place `_acme-challenge` TXT record under your domain via specified DNS API.

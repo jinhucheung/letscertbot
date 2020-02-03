@@ -11,10 +11,10 @@ import random
 root_path = os.path.sep.join([os.path.split(os.path.realpath(__file__))[0], '..'])
 
 sys.path.append(root_path)
-import api
+import dns
 from lib import Config, Logger, Utils
 
-def auth(api_type = 'aliyun'):
+def auth(dns_type = 'aliyun'):
     try:
         if 'CERTBOT_DOMAIN' not in os.environ:
             raise Exception('Environment variable CERTBOT_DOMAIN is empty.')
@@ -30,7 +30,7 @@ def auth(api_type = 'aliyun'):
 
         maindomain, acme_challenge = __extract_maindomain_and_challenge(certbot_domain)
 
-        client = __get_api_client(api_type)
+        client = __get_dns_client(dns_type)
         client.add_domain_record(maindomain, acme_challenge, certbot_validation)
 
         Logger.info('manual#auth: sleep 10 seconds')
@@ -41,7 +41,7 @@ def auth(api_type = 'aliyun'):
         Logger.error('manual#auth raise Exception:' + str(e))
         sys.exit()
 
-def cleanup(api_type = 'aliyun'):
+def cleanup(dns_type = 'aliyun'):
     try:
         if 'CERTBOT_DOMAIN' not in os.environ:
             raise Exception('Environment variable CERTBOT_DOMAIN is empty.')
@@ -53,7 +53,7 @@ def cleanup(api_type = 'aliyun'):
 
         maindomain, acme_challenge = __extract_maindomain_and_challenge(certbot_domain)
 
-        client = __get_api_client(api_type)
+        client = __get_dns_client(dns_type)
         client.delete_domain_record(maindomain, acme_challenge)
 
         Logger.info('manual#cleanup: sleep 10 seconds')
@@ -64,15 +64,15 @@ def cleanup(api_type = 'aliyun'):
         Logger.error('manual#cleanup raise Exception:' + str(e))
         sys.exit()
 
-def test(domain, api_type = 'aliyun'):
+def test(domain, dns_type = 'aliyun'):
     try:
-        print('start to test ' + domain + ' in DNS ' + api_type + ' API')
+        print('start to test ' + domain + ' in DNS ' + dns_type + ' API')
 
-        client = __get_api_client(api_type)
+        client = __get_dns_client(dns_type)
         maindomain, acme_challenge = __extract_maindomain_and_challenge(domain)
         validation = ''.join(random.sample(string.ascii_letters + string.digits, 16))
 
-        print('add TXT record(domain=' + maindomain + ', rr=' + acme_challenge + ', value=' + validation + ') to ' + api_type + ' DNS')
+        print('add TXT record(domain=' + maindomain + ', rr=' + acme_challenge + ', value=' + validation + ') to ' + dns_type + ' DNS')
         client.add_domain_record(maindomain, acme_challenge, validation)
         print('added TXT record')
 
@@ -83,22 +83,22 @@ def test(domain, api_type = 'aliyun'):
         client.delete_domain_record(maindomain, acme_challenge)
         print('removed TXT record')
 
-        print('tested ' + domain + ' in DNS ' + api_type + ' API')
+        print('tested ' + domain + ' in DNS ' + dns_type + ' API')
     except Exception as e:
         Logger.error('test raise Exception:' + str(e))
         sys.exit()
 
-def __get_api_client(api_type = 'aliyun'):
+def __get_dns_client(dns_type = 'aliyun'):
     try:
-        key = Config['api'][api_type]
+        key = Config['dns'][dns_type]
 
-        if 'aliyun' == api_type:
-            return api.Aliyun(key['access_key_id'], key['access_key_secret'])
-        elif 'qcloud' == api_type:
-            return api.Qcloud(key['secret_id'], key['secret_key'])
+        if 'aliyun' == dns_type:
+            return dns.Aliyun(key['access_key_id'], key['access_key_secret'])
+        elif 'qcloud' == dns_type:
+            return dns.Qcloud(key['secret_id'], key['secret_key'])
     except KeyError as e:
-        print('The ' + api_type + ' DNS API is not be supported at persent')
-        Logger.error('manual#get_api raise KeyError: ' + str(e))
+        print('The ' + dns_type + ' DNS API is not be supported at persent')
+        Logger.error('manual#get_dns raise KeyError: ' + str(e))
         sys.exit()
 
 def __extract_maindomain_and_challenge(domain):
@@ -115,12 +115,12 @@ def __extract_maindomain_and_challenge(domain):
     return (maindomain, acme_challenge)
 
 def main():
-    parser = argparse.ArgumentParser(description='example: python %s --auth --api aliyun' % os.path.basename(__file__))
+    parser = argparse.ArgumentParser(description='example: python %s --auth --dns aliyun' % os.path.basename(__file__))
 
     parser.add_argument('-a', '--auth', help='auth hook', action='store_true')
     parser.add_argument('-c', '--cleanup', help='cleanup hook', action='store_true')
     parser.add_argument('-t', '--test', help='test DNS API', action='store_true')
-    parser.add_argument('--api', help='api type, default: aliyun', default='aliyun')
+    parser.add_argument('--dns', help='dns type, default: aliyun', default='aliyun')
     parser.add_argument('-d', '--domain', help='a domain for test DNS API')
 
     args = parser.parse_args()
@@ -130,11 +130,11 @@ def main():
     if args.test:
         if args.domain is None:
             parser.error('-t, --test require --domain.')
-        return test(args.domain, args.api)
+        return test(args.domain, args.dns)
     elif args.auth:
-        auth(args.api)
+        auth(args.dns)
     elif args.cleanup:
-        cleanup(args.api)
+        cleanup(args.dns)
 
 if __name__ == '__main__':
     main()
