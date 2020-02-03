@@ -6,7 +6,7 @@
 
 **Breaking changes:**
 
-- change API module to DNS module [\#11](https://github.com/jinhucheung/letscertbot/issues/11)
+- Change API module to DNS module [\#11](https://github.com/jinhucheung/letscertbot/issues/11)
 
 ## [v0.3.0](https://github.com/jinhucheung/letscertbot/tree/v0.3.0) (2020-02-02)
 
@@ -14,7 +14,11 @@
 
 **Breaking changes:**
 
-- add Docker support [\#8](https://github.com/jinhucheung/letscertbot/pull/8)
+- Add Docker support [\#8](https://github.com/jinhucheung/letscertbot/pull/8)
+
+**Implemented enhancements:**
+
+- Add QCloud DNS support [\#5](https://github.com/jinhucheung/letscertbot/pull/5)
 
 ## [v0.2.0](https://github.com/jinhucheung/letscertbot/tree/v0.2.0) (2019-10-26)
 
@@ -27,3 +31,12 @@
 **Fixed bugs:**
 
 - Can't renew certificate if `deploy.server.deploy_to` set `/etc/letsencrypt/live` on local deployment [\#4](https://github.com/jinhucheung/letscertbot/pull/4)
+
+## [v0.1.0](https://github.com/jinhucheung/letscertbot/tree/v0.1.0) (2019-10-23)
+
+**Implemented enhancements:**
+
+- Obtain certificate
+- Renewal certificate
+- Deploy certificate
+- Add Aliyun DNS support
