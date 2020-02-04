@@ -33,8 +33,8 @@ def auth(dns_type = 'aliyun'):
         client = __get_dns_client(dns_type)
         client.add_domain_record(maindomain, acme_challenge, certbot_validation)
 
-        Logger.info('manual#auth: sleep 16 seconds')
-        time.sleep(16)
+        Logger.info('manual#auth: sleep 20 seconds')
+        time.sleep(20)
 
         Logger.info('manual#auth: Success.')
     except Exception as e:
@@ -56,8 +56,8 @@ def cleanup(dns_type = 'aliyun'):
         client = __get_dns_client(dns_type)
         client.delete_domain_record(maindomain, acme_challenge)
 
-        Logger.info('manual#cleanup: sleep 16 seconds')
-        time.sleep(16)
+        Logger.info('manual#cleanup: sleep 20 seconds')
+        time.sleep(20)
 
         Logger.info('manual#cleanup: Success.')
     except Exception as e:
