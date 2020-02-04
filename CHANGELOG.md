@@ -8,6 +8,10 @@
 
 - Add GoDaddy DNS support [\#12](https://github.com/jinhucheung/letscertbot/pull/12)
 
+**Fixed bugs:**
+
+- Remove dns argument from Renewal script
+
 ## [v0.3.1](https://github.com/jinhucheung/letscertbot/tree/v0.3.1) (2020-02-03)
 
 [Full Changelog](https://github.com/jinhucheung/letscertbot/compare/v0.3.0..v0.3.1)
