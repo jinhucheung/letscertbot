@@ -12,6 +12,7 @@ Supports domain name registrar at persent:
 
 - [Aliyun](https://www.aliyun.com/)
 - [Tencent Cloud](https://cloud.tencent.com/)
+- [GoDaddy](https://godaddy.com)
 
 ## Installation
 
@@ -78,6 +79,8 @@ Before running Let's Certbot, you have the following configuration to change:
 | dns.aliyun.access_key_secret | false    | AccessKey Secret of Aliyun account                                                   |                       |
 | dns.qcloud.secret_id         | false    | SecretId of Tencent Cloud account                                                    |                       |
 | dns.qcloud.secret_key        | false    | SecretKey Secret of Tencent Cloud account                                            |                       |
+| dns.godaddy.api_key          | false    | API Key of GoDaddy account                                                           |                       |
+| dns.godaddy.api_secret       | false    | API Secret of GoDaddy account                                                        |                       |
 | log.enable                   | false    | Whether to enable log tracker                                                        | false                 |
 | log.logfile                  | false    | The path of log file                                                                 | ./log/application.log |
 | deploy.servers               | false    | The deployment servers                                                               |                       |

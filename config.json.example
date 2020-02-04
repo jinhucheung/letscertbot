@@ -10,6 +10,10 @@
     "qcloud": {
       "secret_id": "your_secret_id",
       "secret_key": "your_secret_key"
+    },
+    "godaddy": {
+      "api_key": "your_api_key",
+      "api_secret": "your_api_secret"
     }
   },
   "log": {

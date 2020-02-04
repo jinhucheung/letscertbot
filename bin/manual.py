@@ -96,6 +96,8 @@ def __get_dns_client(dns_type = 'aliyun'):
             return dns.Aliyun(key['access_key_id'], key['access_key_secret'])
         elif 'qcloud' == dns_type:
             return dns.Qcloud(key['secret_id'], key['secret_key'])
+        elif 'godaddy' == dns_type:
+            return dns.GoDaddy(key['api_key'], key['api_secret'])
     except KeyError as e:
         print('The ' + dns_type + ' DNS API is not be supported at persent')
         Logger.error('manual#get_dns raise KeyError: ' + str(e))

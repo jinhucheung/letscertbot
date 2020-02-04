@@ -10,6 +10,7 @@ Let's Certbot 是一个基于 [Certbot](https://certbot.eff.org/) 用于自动�
 
 - [阿里云](https://www.aliyun.com/)
 - [腾讯云](https://cloud.tencent.com/)
+- [GoDaddy](https://godaddy.com)
 
 ## 安装
 
@@ -76,6 +77,8 @@ $ sudo certbot --version
 | dns.aliyun.access_key_secret | false | 阿里云帐号的 AccessKey Secret                                      |                       |
 | dns.qcloud.secret_id         | false | 腾讯云帐号的 SecretId                                              |                       |
 | dns.qcloud.secret_key        | false | 腾讯云帐号的 SecretKey                                             |                       |
+| dns.godaddy.api_key          | false | GoDaddy 帐号的 API Key                                             |                       |
+| dns.godaddy.api_secret       | false | GoDaddy 帐号的 API Secret                                          |                       |
 | log.enable                   | false | 是否启用日志跟踪                                                   | false                 |
 | log.logfile                  | false | 日志文件路径                                                       | ./log/application.log |
 | deploy.servers               | false | 部署服务器列表                                                     |                       |
