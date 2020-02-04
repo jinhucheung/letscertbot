@@ -33,8 +33,8 @@ def auth(dns_type = 'aliyun'):
         client = __get_dns_client(dns_type)
         client.add_domain_record(maindomain, acme_challenge, certbot_validation)
 
-        Logger.info('manual#auth: sleep 10 seconds')
-        time.sleep(10)
+        Logger.info('manual#auth: sleep 20 seconds')
+        time.sleep(20)
 
         Logger.info('manual#auth: Success.')
     except Exception as e:
@@ -56,8 +56,8 @@ def cleanup(dns_type = 'aliyun'):
         client = __get_dns_client(dns_type)
         client.delete_domain_record(maindomain, acme_challenge)
 
-        Logger.info('manual#cleanup: sleep 10 seconds')
-        time.sleep(10)
+        Logger.info('manual#cleanup: sleep 20 seconds')
+        time.sleep(20)
 
         Logger.info('manual#cleanup: Success.')
     except Exception as e:
@@ -96,6 +96,8 @@ def __get_dns_client(dns_type = 'aliyun'):
             return dns.Aliyun(key['access_key_id'], key['access_key_secret'])
         elif 'qcloud' == dns_type:
             return dns.Qcloud(key['secret_id'], key['secret_key'])
+        elif 'godaddy' == dns_type:
+            return dns.GoDaddy(key['api_key'], key['api_secret'])
     except KeyError as e:
         print('The ' + dns_type + ' DNS API is not be supported at persent')
         Logger.error('manual#get_dns raise KeyError: ' + str(e))
