@@ -10,7 +10,7 @@
 
 **Fixed bugs:**
 
-- Remove dns argument from Renewal script
+- Remove dns argument from Renewal script [\#12](https://github.com/jinhucheung/letscertbot/pull/12)
 
 ## [v0.3.1](https://github.com/jinhucheung/letscertbot/tree/v0.3.1) (2020-02-03)
 
