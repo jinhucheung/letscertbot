@@ -33,8 +33,8 @@ def auth(dns_type = 'aliyun'):
         client = __get_dns_client(dns_type)
         client.add_domain_record(maindomain, acme_challenge, certbot_validation)
 
-        Logger.info('manual#auth: sleep 20 seconds')
-        time.sleep(20)
+        Logger.info('manual#auth: sleep %(time)i seconds' % { 'time' : __get_wait_time()})
+        time.sleep(__get_wait_time())
 
         Logger.info('manual#auth: Success.')
     except Exception as e:
@@ -56,8 +56,8 @@ def cleanup(dns_type = 'aliyun'):
         client = __get_dns_client(dns_type)
         client.delete_domain_record(maindomain, acme_challenge)
 
-        Logger.info('manual#cleanup: sleep 20 seconds')
-        time.sleep(20)
+        Logger.info('manual#cleanup: sleep %(time)i seconds' % { 'time' : __get_wait_time()})
+        time.sleep(__get_wait_time())
 
         Logger.info('manual#cleanup: Success.')
     except Exception as e:
@@ -76,8 +76,8 @@ def test(domain, dns_type = 'aliyun'):
         client.add_domain_record(maindomain, acme_challenge, validation)
         print('added TXT record')
 
-        print('waiting 10 seconds...')
-        time.sleep(10)
+        print('waiting %(time)i seconds...' % { 'time' : __get_wait_time()})
+        time.sleep(__get_wait_time())
 
         print('remove above TXT record')
         client.delete_domain_record(maindomain, acme_challenge)
@@ -98,6 +98,7 @@ def __get_dns_client(dns_type = 'aliyun'):
             return dns.Qcloud(key['secret_id'], key['secret_key'])
         elif 'godaddy' == dns_type:
             return dns.GoDaddy(key['api_key'], key['api_secret'])
+        raise KeyError(dns_type)
     except KeyError as e:
         print('The ' + dns_type + ' DNS API is not be supported at persent')
         Logger.error('manual#get_dns raise KeyError: ' + str(e))
@@ -115,6 +116,12 @@ def __extract_maindomain_and_challenge(domain):
     Logger.info('manual_hook acme_challenge: ' + acme_challenge)
 
     return (maindomain, acme_challenge)
+
+def __get_wait_time():
+    try:
+        return int(Config['dns'].get('wait_time', 20))
+    except:
+        return 20
 
 def main():
     parser = argparse.ArgumentParser(description='example: python %s --auth --dns aliyun' % os.path.basename(__file__))
