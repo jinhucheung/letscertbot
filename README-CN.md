@@ -72,7 +72,8 @@ $ sudo certbot --version
 | 名称                         | 必须  | 描述                                                               | 默认                  |
 | ---------------------------- | ----- | ------------------------------------------------------------------ | --------------------- |
 | base.email                   | true  | 邮箱地址，用于接收续期等通知                                       |                       |
-| dns                          | true  | 提供任一个域名服务商的访问密钥                                     |                       |
+| dns                          | true  | dns 设置                                                           |                       |
+| dns.wait_time                | false | dns 验证等待时间(秒)                                               | 20                    |
 | dns.aliyun.access_key_id     | false | 阿里云帐号的 AccessKey ID                                          |                       |
 | dns.aliyun.access_key_secret | false | 阿里云帐号的 AccessKey Secret                                      |                       |
 | dns.qcloud.secret_id         | false | 腾讯云帐号的 SecretId                                              |                       |

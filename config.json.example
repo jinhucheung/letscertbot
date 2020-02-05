@@ -3,6 +3,7 @@
     "email": "your_email"
   },
   "dns": {
+    "wait_time": 20,
     "aliyun": {
       "access_key_id": "your_access_key_id",
       "access_key_secret": "your_access_key_secret"

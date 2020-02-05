@@ -74,7 +74,8 @@ Before running Let's Certbot, you have the following configuration to change:
 | Name                         | Required | Description                                                                          | Default               |
 | ---------------------------- | -------- | ------------------------------------------------------------------------------------ | --------------------- |
 | base.email                   | true     | Email address for important renewal notifications                                    |                       |
-| dns                          | true     | Provide access keys for supported domain name registrar                              |                       |
+| dns                          | true     | dns settings                                                                         |                       |
+| dns.wait_time                | false    | dns challenge wait time (seconds)                                                    | 20                    |
 | dns.aliyun.access_key_id     | false    | AccessKey ID of Aliyun account                                                       |                       |
 | dns.aliyun.access_key_secret | false    | AccessKey Secret of Aliyun account                                                   |                       |
 | dns.qcloud.secret_id         | false    | SecretId of Tencent Cloud account                                                    |                       |
