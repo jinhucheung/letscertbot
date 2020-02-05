@@ -12,6 +12,7 @@ Supports domain name registrar at persent:
 
 - [Aliyun](https://www.aliyun.com/)
 - [Tencent Cloud](https://cloud.tencent.com/)
+- [Huawei Cloud](https://www.huaweicloud.com/)
 - [GoDaddy](https://godaddy.com)
 
 ## Installation
@@ -71,27 +72,29 @@ $ sudo certbot --version
 
 Before running Let's Certbot, you have the following configuration to change:
 
-| Name                         | Required | Description                                                                          | Default               |
-| ---------------------------- | -------- | ------------------------------------------------------------------------------------ | --------------------- |
-| base.email                   | true     | Email address for important renewal notifications                                    |                       |
-| dns                          | true     | dns settings                                                                         |                       |
-| dns.wait_time                | false    | dns challenge wait time (seconds)                                                    | 20                    |
-| dns.aliyun.access_key_id     | false    | AccessKey ID of Aliyun account                                                       |                       |
-| dns.aliyun.access_key_secret | false    | AccessKey Secret of Aliyun account                                                   |                       |
-| dns.qcloud.secret_id         | false    | SecretId of Tencent Cloud account                                                    |                       |
-| dns.qcloud.secret_key        | false    | SecretKey Secret of Tencent Cloud account                                            |                       |
-| dns.godaddy.api_key          | false    | API Key of GoDaddy account                                                           |                       |
-| dns.godaddy.api_secret       | false    | API Secret of GoDaddy account                                                        |                       |
-| log.enable                   | false    | Whether to enable log tracker                                                        | false                 |
-| log.logfile                  | false    | The path of log file                                                                 | ./log/application.log |
-| deploy.servers               | false    | The deployment servers                                                               |                       |
-| deploy.server.enable         | false    | Whether to run deployment script for server                                          | false                 |
-| deploy.server.host           | false    | The host of deployment server, set "localhost" for local server, required on deploy. |                       |
-| deploy.server.port           | false    | The port of remote server SSH daemon                                                 | 22                    |
-| deploy.server.user           | false    | The user of remote server uses SSH login, run command                                | root                  |
-| deploy.server.password       | false    | The password of remote user                                                          |                       |
-| deploy.server.deploy_to      | false    | The stored path of certificate in server                                             | /etc/letsencrypt/live |
-| deploy.server.restart_nginx  | false    | Whether to restart nginx in server                                                   | false                 |
+| Name                              | Required | Description                                                                          | Default               |
+| --------------------------------- | -------- | ------------------------------------------------------------------------------------ | --------------------- |
+| base.email                        | true     | Email address for important renewal notifications                                    |                       |
+| dns                               | true     | dns settings                                                                         |                       |
+| dns.wait_time                     | false    | dns challenge wait time (seconds)                                                    | 20                    |
+| dns.aliyun.access_key_id          | false    | Access Key Id of Aliyun account                                                      |                       |
+| dns.aliyun.access_key_secret      | false    | Access Key Secret of Aliyun account                                                  |                       |
+| dns.qcloud.secret_id              | false    | Secret Id of Tencent Cloud account                                                   |                       |
+| dns.qcloud.secret_key             | false    | Secret Key of Tencent Cloud account                                                  |                       |
+| dns.godaddy.api_key               | false    | API Key of GoDaddy account                                                           |                       |
+| dns.godaddy.api_secret            | false    | API Secret of GoDaddy account                                                        |                       |
+| dns.huaweicloud.access_key_id     | false    | Access Key Id of Huawei Cloud account                                                |                       |
+| dns.huaweicloud.secret_access_key | false    | Secret Access Key of Huawei Cloud account                                            |                       |
+| log.enable                        | false    | Whether to enable log tracker                                                        | false                 |
+| log.logfile                       | false    | The path of log file                                                                 | ./log/application.log |
+| deploy.servers                    | false    | The deployment servers                                                               |                       |
+| deploy.server.enable              | false    | Whether to run deployment script for server                                          | false                 |
+| deploy.server.host                | false    | The host of deployment server, set "localhost" for local server, required on deploy. |                       |
+| deploy.server.port                | false    | The port of remote server SSH daemon                                                 | 22                    |
+| deploy.server.user                | false    | The user of remote server uses SSH login, run command                                | root                  |
+| deploy.server.password            | false    | The password of remote user                                                          |                       |
+| deploy.server.deploy_to           | false    | The stored path of certificate in server                                             | /etc/letsencrypt/live |
+| deploy.server.restart_nginx       | false    | Whether to restart nginx in server                                                   | false                 |
 
 In addition, `tlds.txt` contains some top level domains(TLD) and second level domains(SLD) for separating subdomain and main domain. If the TLD or SLD of your domain is not existed in `tlds.txt`, you need to append it in list.
 

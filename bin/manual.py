@@ -90,14 +90,16 @@ def test(domain, dns_type = 'aliyun'):
 
 def __get_dns_client(dns_type = 'aliyun'):
     try:
-        key = Config['dns'][dns_type]
+        data = Config['dns'][dns_type]
 
         if 'aliyun' == dns_type:
-            return dns.Aliyun(key['access_key_id'], key['access_key_secret'])
+            return dns.Aliyun(data['access_key_id'], data['access_key_secret'])
         elif 'qcloud' == dns_type:
-            return dns.Qcloud(key['secret_id'], key['secret_key'])
+            return dns.Qcloud(data['secret_id'], data['secret_key'])
         elif 'godaddy' == dns_type:
-            return dns.GoDaddy(key['api_key'], key['api_secret'])
+            return dns.GoDaddy(data['api_key'], data['api_secret'])
+        elif 'huaweicloud' == dns_type:
+            return dns.HuaweiCloud(data['access_key_id'], data['secret_access_key'])
         raise KeyError(dns_type)
     except KeyError as e:
         print('The ' + dns_type + ' DNS API is not be supported at persent')

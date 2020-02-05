@@ -56,6 +56,9 @@ class GoDaddy:
 
         return self.__request('GET', path)
 
+    def to_string(self):
+        return 'godaddy[api_key=%s, , api_secret=%s]' % (self.api_key, self.api_secret)
+
     def __request(self, method, path, payload={}):
         url = 'https://%s%s%s' % (self.__host, self.__path, path)
         data = json.dumps(payload).encode('utf-8')
@@ -76,9 +79,6 @@ class GoDaddy:
         except urllib2.HTTPError as e:
             Logger.error('godaddy#__request raise urllib2.HTTPError: ' + str(e))
             raise SystemExit(e)
-
-    def to_string(self):
-        return 'godaddy[api_key=' + self.api_key + ', api_secret=' + self.api_secret + ']'
 
 if __name__ == '__main__':
     Logger.info('开始调用 Godaddy DNS API')

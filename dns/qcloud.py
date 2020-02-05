@@ -69,7 +69,7 @@ class Qcloud:
         return self.__request(params)
 
     def to_string(self):
-        return 'qcloud[secret_id=' + self.secret_id + ', secret_key=' + self.secret_key + ']'
+        return 'qcloud[secret_id=%s, secret_key=%s]' % (self.secret_id, self.secret_key)
 
     def __request(self, params):
         url = self.__compose_url(params)

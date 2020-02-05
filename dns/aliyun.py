@@ -51,7 +51,7 @@ class Aliyun:
         self.__request(params)
 
     def to_string(self):
-        return 'aliyun[access_key_id=' + self.access_key_id + ', access_key_secret=' + self.access_key_secret + ']'
+        return 'aliyun[access_key_id=%s, access_key_secret=%s]' % (self.access_key_id, self.access_key_secret)
 
     def __request(self, params):
         url = self.__compose_url(params)
