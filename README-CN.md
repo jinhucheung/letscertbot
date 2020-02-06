@@ -10,6 +10,7 @@ Let's Certbot 是一个基于 [Certbot](https://certbot.eff.org/) 用于自动�
 
 - [阿里云](https://www.aliyun.com/)
 - [腾讯云](https://cloud.tencent.com/)
+- [华为云](https://www.huaweicloud.com/)
 - [GoDaddy](https://godaddy.com)
 
 ## 安装
@@ -69,27 +70,25 @@ $ sudo certbot --version
 
 在执行 Let's Certbot 前，你有以下的配置需要更新:
 
-| 名称                         | 必须  | 描述                                                               | 默认                  |
-| ---------------------------- | ----- | ------------------------------------------------------------------ | --------------------- |
-| base.email                   | true  | 邮箱地址，用于接收续期等通知                                       |                       |
-| dns                          | true  | dns 设置                                                           |                       |
-| dns.wait_time                | false | dns 验证等待时间(秒)                                               | 20                    |
-| dns.aliyun.access_key_id     | false | 阿里云帐号的 AccessKey ID                                          |                       |
-| dns.aliyun.access_key_secret | false | 阿里云帐号的 AccessKey Secret                                      |                       |
-| dns.qcloud.secret_id         | false | 腾讯云帐号的 SecretId                                              |                       |
-| dns.qcloud.secret_key        | false | 腾讯云帐号的 SecretKey                                             |                       |
-| dns.godaddy.api_key          | false | GoDaddy 帐号的 API Key                                             |                       |
-| dns.godaddy.api_secret       | false | GoDaddy 帐号的 API Secret                                          |                       |
-| log.enable                   | false | 是否启用日志跟踪                                                   | false                 |
-| log.logfile                  | false | 日志文件路径                                                       | ./log/application.log |
-| deploy.servers               | false | 部署服务器列表                                                     |                       |
-| deploy.server.enable         | false | 部署服务器是否启用部署脚本                                         | false                 |
-| deploy.server.host           | false | 部署服务器地址，本地服务器则使用 localhost，启用部署脚本后必须提供 |                       |
-| deploy.server.port           | false | 部署远程服务器 SSH 守护进程绑定的端口                              | 22                    |
-| deploy.server.user           | false | 部署远程服务器登录的用户，用于执行部署脚本                         | root                  |
-| deploy.server.password       | false | 部署远程服务器登录的密码                                           |                       |
-| deploy.server.deploy_to      | false | 部署证书存储在服务器的路径                                         | /etc/letsencrypt/live |
-| deploy.server.restart_nginx  | false | 是否在部署后重启服务器 nginx                                       | false                 |
+| 名称                        | 必须  | 描述                                                               | 默认                  |
+| --------------------------- | ----- | ------------------------------------------------------------------ | --------------------- |
+| base.email                  | true  | 邮箱地址，用于接收续期等通知                                       |                       |
+| dns                         | true  | dns 设置                                                           |                       |
+| dns.wait_time               | false | dns 验证等待时间(秒)                                               | 20                    |
+| dns.aliyun                  | false | 阿里云帐号的 Access Key Id 和 Access Key Secret                    |                       |
+| dns.qcloud                  | false | 腾讯云帐号的 Secret Id 和 Secret Key                               |                       |
+| dns.godaddy                 | false | GoDaddy 帐号的 API Key 和 API Secret                               |                       |
+| dns.huaweicloud             | false | 华为云帐号的 Access Key Id 和 Secret Access Key                    |                       |
+| log.enable                  | false | 是否启用日志跟踪                                                   | false                 |
+| log.logfile                 | false | 日志文件路径                                                       | ./log/application.log |
+| deploy.servers              | false | 部署服务器列表                                                     |                       |
+| deploy.server.enable        | false | 部署服务器是否启用部署脚本                                         | false                 |
+| deploy.server.host          | false | 部署服务器地址，本地服务器则使用 localhost，启用部署脚本后必须提供 |                       |
+| deploy.server.port          | false | 部署远程服务器 SSH 守护进程绑定的端口                              | 22                    |
+| deploy.server.user          | false | 部署远程服务器登录的用户，用于执行部署脚本                         | root                  |
+| deploy.server.password      | false | 部署远程服务器登录的密码                                           |                       |
+| deploy.server.deploy_to     | false | 部署证书存储在服务器的路径                                         | /etc/letsencrypt/live |
+| deploy.server.restart_nginx | false | 是否在部署后重启服务器 nginx                                       | false                 |
 
 此外， `tlds.txt` 文件包含了一些顶级域名(TLD)和二级域名(SLD) 用于分开域名中的子域和主域。如果你域名中的顶级域或二级域不在 `tlds.txt` 中，你需要将它添加在此文件中。
 

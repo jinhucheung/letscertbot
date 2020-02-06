@@ -23,7 +23,7 @@ sys.path.append(root_path)
 from lib import Logger
 
 class Aliyun:
-    __endpoint = 'https://alidns.aliyuncs.com'
+    __endpoint = 'alidns.aliyuncs.com'
 
     def __init__(self, access_key_id, access_key_secret):
         self.access_key_id = access_key_id
@@ -51,7 +51,7 @@ class Aliyun:
         self.__request(params)
 
     def to_string(self):
-        return 'aliyun[access_key_id=' + self.access_key_id + ', access_key_secret=' + self.access_key_secret + ']'
+        return 'aliyun[access_key_id=%s, access_key_secret=%s]' % (self.access_key_id, self.access_key_secret)
 
     def __request(self, params):
         url = self.__compose_url(params)
@@ -83,7 +83,7 @@ class Aliyun:
         final_params['Signature'] = self.__compute_signature(final_params)
         Logger.info('Signature ' + str(final_params['Signature']))
 
-        url = '%s/?%s' % (self.__endpoint, urllib.urlencode(final_params))
+        url = 'https://%s/?%s' % (self.__endpoint, urllib.urlencode(final_params))
 
         return url
 
