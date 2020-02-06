@@ -33,7 +33,7 @@ class HuaweiCloud:
     # @example huaweicloud.get_domain_record("example.com", "_acme-challenge", "TXT")
     def get_domain_record(self, domain, rr, _type = 'TXT'):
         try:
-            full_domain = '.'.join([rr, domain]
+            full_domain = '.'.join([rr, domain])
             response = self.__request('GET', 'v2/recordsets?type=%s&name=%s' % (_type, full_domain))
             content = json.loads(response.content)
             return filter(lambda record: record['name'][:-1] == full_domain and record['type'] == _type, content['recordsets'])[0]
@@ -71,6 +71,7 @@ class HuaweiCloud:
         return 'huaweicloud[access_key_id=%s, secret_access_key=%s]' % (self.access_key_id, self.secret_access_key)
 
     def __request(self, method, path, payload={}):
+        return
 
 if __name__ == '__main__':
     Logger.info('开始调用华为云 DNS API')
