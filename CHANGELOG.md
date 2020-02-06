@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.3.3](https://github.com/jinhucheung/letscertbot/tree/v0.3.3) (2020-02-06)
+
+[Full Changelog](https://github.com/jinhucheung/letscertbot/compare/v0.3.2..v0.3.3)
+
+**Implemented enhancements:**
+
+- Add Huawei Cloud DNS support [\#15](https://github.com/jinhucheung/letscertbot/pull/15)
+- Add dns challenge wait time [\#14](https://github.com/jinhucheung/letscertbot/pull/14)
+
 ## [v0.3.2](https://github.com/jinhucheung/letscertbot/tree/v0.3.2) (2020-02-05)
 
 [Full Changelog](https://github.com/jinhucheung/letscertbot/compare/v0.3.1..v0.3.2)
