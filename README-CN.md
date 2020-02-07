@@ -13,6 +13,10 @@ Let's Certbot 是一个基于 [Certbot](https://certbot.eff.org/) 用于自动�
 - [华为云](https://www.huaweicloud.com/)
 - [GoDaddy](https://godaddy.com)
 
+## 示例
+
+<img src="https://user-images.githubusercontent.com/19590194/74021190-1907ec00-49d6-11ea-9d28-5ad5c336f0d6.gif" width="80%" alt="example" />
+
 ## 安装
 
 Let's Certbot 作为一个 Certbot 工具，支持 Docker 容器或非容器方式安装。

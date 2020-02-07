@@ -15,6 +15,10 @@ Supports domain name registrar at persent:
 - [Huawei Cloud](https://www.huaweicloud.com/)
 - [GoDaddy](https://godaddy.com)
 
+## Example
+
+<img src="https://user-images.githubusercontent.com/19590194/74021190-1907ec00-49d6-11ea-9d28-5ad5c336f0d6.gif" width="80%" alt="example" />
+
 ## Installation
 
 Let's Certbot as a Certbot tool supports docker and non-docker environments.
