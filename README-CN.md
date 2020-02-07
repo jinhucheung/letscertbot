@@ -41,7 +41,7 @@ $ cp config.json.example config.json
 你可以通过 Docker 来执行 Let's Certbot:
 
 ```
-$ sudo docker run --rm --name letscertbot -v "$your_letscertbot_home/config.json:/app/config.json" -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/lib/letsencrypt:/var/lib/letsencrypt" jimcheung/letscertbot
+$ sudo docker run --rm --name letscertbot -v "$your_letscertbot_home/config.json:/app/config.json" -v "$your_letscertbot_home/tlds.txt:/app/tlds.txt" -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/lib/letsencrypt:/var/lib/letsencrypt" jimcheung/letscertbot
 ```
 
 如果你已安装 Docker Compose, 可以通过 Compose 执行:
