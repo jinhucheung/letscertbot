@@ -15,7 +15,7 @@ Let's Certbot 是一个基于 [Certbot](https://certbot.eff.org/) 用于自动�
 
 ## 示例
 
-<img src="https://user-images.githubusercontent.com/19590194/74021190-1907ec00-49d6-11ea-9d28-5ad5c336f0d6.gif" width="80%" alt="example" />
+![example](https://user-images.githubusercontent.com/19590194/74025460-f62e0580-49de-11ea-989d-9dccf74439d6.gif)
 
 ## 安装
 

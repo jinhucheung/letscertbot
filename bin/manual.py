@@ -56,9 +56,6 @@ def cleanup(dns_type = 'aliyun'):
         client = __get_dns_client(dns_type)
         client.delete_domain_record(maindomain, acme_challenge)
 
-        Logger.info('manual#cleanup: sleep %(time)i seconds' % { 'time' : __get_wait_time()})
-        time.sleep(__get_wait_time())
-
         Logger.info('manual#cleanup: Success.')
     except Exception as e:
         Logger.error('manual#cleanup raise Exception:' + str(e))
