@@ -93,6 +93,7 @@ $ sudo certbot --version
 | deploy.server.password      | false | 部署远程服务器登录的密码                                           |                       |
 | deploy.server.deploy_to     | false | 部署证书存储在服务器的路径                                         | /etc/letsencrypt/live |
 | deploy.server.restart_nginx | false | 是否在部署后重启服务器 nginx                                       | false                 |
+| deploy.server.after_hook    | false | 服务器在部署成功后执行的命令                                       | false                 |
 
 此外， `tlds.txt` 文件包含了一些顶级域名(TLD)和二级域名(SLD) 用于分开域名中的子域和主域。如果你域名中的顶级域或二级域不在 `tlds.txt` 中，你需要将它添加在此文件中。
 

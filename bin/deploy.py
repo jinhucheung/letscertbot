@@ -87,7 +87,8 @@ def build_script(server, cert_path = None):
         'port': server.get('port', None) or 22,
         'user': server.get('user', None) or 'root',
         'password': server.get('password', ''),
-        'restart_nginx': server.get('restart_nginx', False)
+        'restart_nginx': server.get('restart_nginx', False),
+        'after_hook': server.get('after_hook', '')
     })
 
 def main():
