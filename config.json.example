@@ -31,7 +31,8 @@
         "enable": false,
         "host": "localhost",
         "deploy_to": "",
-        "restart_nginx": false
+        "restart_nginx": false,
+        "after_hook": ""
       },
       {
         "enable": false,
@@ -40,7 +41,8 @@
         "user": "root",
         "password": "",
         "deploy_to": "/etc/letsencrypt/live",
-        "restart_nginx": false
+        "restart_nginx": false,
+        "after_hook": ""
       }
     ]
   }

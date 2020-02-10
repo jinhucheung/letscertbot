@@ -18,7 +18,10 @@ class BaseScriptTemplate(object):
         self.options = options
 
     def escape(self, string):
-        return str(string).replace("'", "\\'").replace('"', '\\"').replace(' ', '\\ ')
+        return self.escape_quotes(string).replace(' ', '\\ ')
+
+    def escape_quotes(self, string):
+        return str(string).replace("'", "\\'").replace('"', '\\"')
 
     def escape_options(self, key):
         return self.escape(self.options[key])
@@ -34,7 +37,8 @@ class DeployScriptTemplate(BaseScriptTemplate):
             self.build_common_script(),
             (self.build_locale_script() if self.is_localhost else self.build_remote_script()),
             self.build_migrate_script(),
-            self.build_nginx_script()
+            self.build_nginx_script(),
+            self.build_after_hook_script()
         ])
 
     def build_common_script(self):
@@ -238,12 +242,28 @@ class DeployScriptTemplate(BaseScriptTemplate):
             success "Restarted nginx in $server"
         ''')
 
+    def build_after_hook_script(self):
+        if not self.options.get('after_hook', False):
+            return ''
+
+        return textwrap.dedent('''
+            alert "Trying run after_hook in $server:"
+
+            run "%(after_hook)s"
+
+            [ $? -ne 0 ] && error "Run after_hook in $server failed"
+            success "Ran after_hook in $server"
+        ''') % {
+            'after_hook': self.escape_quotes(self.options['after_hook'])
+        }
+
 if __name__ == '__main__':
     print(deploy_script({
         'host': 'localhost',
         'cert_path': '/etc/letsencrpyt/live/your.domain.com',
         'deploy_to': '/root/letsencrpyt/live',
         'restart_nginx': True,
+        'after_hook': 'ls'
     }))
 
     print(deploy_script({
@@ -254,4 +274,5 @@ if __name__ == '__main__':
         'cert_path': '/etc/letsencrpyt/live/your.domain.com',
         'deploy_to': '/root/letsencrpyt/live',
         'restart_nginx': True,
+        'after_hook': 'ls'
     }))
