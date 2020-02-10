@@ -95,7 +95,7 @@ Before running Let's Certbot, you have the following configuration to change:
 | deploy.server.password      | false    | The password of remote user                                                          |                       |
 | deploy.server.deploy_to     | false    | The stored path of certificate in server                                             | /etc/letsencrypt/live |
 | deploy.server.restart_nginx | false    | Whether to restart nginx in server                                                   | false                 |
-| deploy.server.after_hook    | false    | The command that server runs after successful deployment                             | false                 |
+| deploy.server.after_hook    | false    | The command that server runs after successful deployment                             |                       |
 
 In addition, `tlds.txt` contains some top level domains(TLD) and second level domains(SLD) for separating subdomain and main domain. If the TLD or SLD of your domain is not existed in `tlds.txt`, you need to append it in list.
 
