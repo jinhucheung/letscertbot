@@ -18,10 +18,7 @@ class BaseScriptTemplate(object):
         self.options = options
 
     def escape(self, string):
-        return self.escape_quotes(string).replace(' ', '\\ ')
-
-    def escape_quotes(self, string):
-        return str(string).replace("'", "\\'").replace('"', '\\"')
+        return str(string).replace("'", "\\'").replace('"', '\\"').replace(' ', '\\ ')
 
     def escape_options(self, key):
         return self.escape(self.options[key])
@@ -254,7 +251,7 @@ class DeployScriptTemplate(BaseScriptTemplate):
             [ $? -ne 0 ] && error "Run after_hook in $server failed"
             success "Ran after_hook in $server"
         ''') % {
-            'after_hook': self.escape_quotes(self.options['after_hook'])
+            'after_hook': self.options['after_hook']
         }
 
 if __name__ == '__main__':
