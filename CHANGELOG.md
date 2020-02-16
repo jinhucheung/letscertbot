@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.3.5](https://github.com/jinhucheung/letscertbot/tree/v0.3.5) (2020-02-16)
+
+[Full Changelog](https://github.com/jinhucheung/letscertbot/compare/v0.3.4..v0.3.5)
+
+**Implemented enhancements:**
+
+- Add DNS alias mode to Obtain script [\#19](https://github.com/jinhucheung/letscertbot/pull/19)
+
 ## [v0.3.4](https://github.com/jinhucheung/letscertbot/tree/v0.3.4) (2020-02-10)
 
 [Full Changelog](https://github.com/jinhucheung/letscertbot/compare/v0.3.3..v0.3.4)

@@ -14,14 +14,14 @@ sys.path.append(root_path)
 import dns
 from lib import Config, Logger, Utils
 
-def auth(dns_type = 'aliyun'):
+def auth(dns_type = 'aliyun', aliased_domain = None):
     try:
         if 'CERTBOT_DOMAIN' not in os.environ:
             raise Exception('Environment variable CERTBOT_DOMAIN is empty.')
         if 'CERTBOT_VALIDATION' not in os.environ:
             raise Exception('Environment variable CERTBOT_VALIDATION is empty.')
 
-        certbot_domain = os.environ['CERTBOT_DOMAIN']
+        certbot_domain = aliased_domain or os.environ['CERTBOT_DOMAIN']
         certbot_validation = os.environ['CERTBOT_VALIDATION']
 
         Logger.info('manual#auth: Start to setting dns')
@@ -41,12 +41,12 @@ def auth(dns_type = 'aliyun'):
         Logger.error('manual#auth raise Exception:' + str(e))
         sys.exit()
 
-def cleanup(dns_type = 'aliyun'):
+def cleanup(dns_type = 'aliyun', aliased_domain = None):
     try:
         if 'CERTBOT_DOMAIN' not in os.environ:
             raise Exception('Environment variable CERTBOT_DOMAIN is empty.')
 
-        certbot_domain = os.environ['CERTBOT_DOMAIN']
+        certbot_domain = aliased_domain or os.environ['CERTBOT_DOMAIN']
 
         Logger.info('manual#cleanup: Start to cleanup dns')
         Logger.info('manual#cleanup: ' + certbot_domain)
@@ -130,6 +130,7 @@ def main():
     parser.add_argument('-t', '--test', help='test DNS API', action='store_true')
     parser.add_argument('--dns', help='dns type, default: aliyun', default='aliyun')
     parser.add_argument('-d', '--domain', help='a domain for test DNS API')
+    parser.add_argument('--challenge-alias', dest='alias', help='challenge aliased domain, e.g. alias.domain.com')
 
     args = parser.parse_args()
 
@@ -138,11 +139,11 @@ def main():
     if args.test:
         if args.domain is None:
             parser.error('-t, --test require --domain.')
-        return test(args.domain, args.dns)
+        return test(args.alias or args.domain, args.dns)
     elif args.auth:
-        auth(args.dns)
+        auth(args.dns, args.alias)
     elif args.cleanup:
-        cleanup(args.dns)
+        cleanup(args.dns, args.alias)
 
 if __name__ == '__main__':
     main()

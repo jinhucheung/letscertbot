@@ -137,6 +137,22 @@ $ sudo docker-compose run --rm app obtain -d x.example.com y.example.com --cert 
 $ sudo python ./bin/obtain.py -d x.example.com y.example.com --cert xny.example.com
 ```
 
+If your domain name registrar doesn't support api access, or if you're concerned about security problems from giving the access tokento your main domain, then you can use DNS alias argument:
+
+```
+$ sudo docker-compose run --rm app obtain -d x.main_domain.com y.main_domain.com --dns qcloud --challenge-alias alias_domain.com
+
+# Running without docker
+$ sudo python ./bin/obtain.py -d x.main_domain.com y.main_domain.com --dns qcloud --challenge-alias alias_domain.com
+```
+
+In the above command, Let's Certbot transfers `x.main_domain.com`, `y.main_domain.com` challenge to `alias_domain.com`, and sets the txt record of `alias_domain.com` via `qcloud` API. So you need to add CNAME record for challenged domain in advance:
+
+```
+_acme-challenge.x.main_domain.com => _acme-challenge.alias_domain.com
+_acme-challenge.y.main_domain.com => _acme-challenge.alias_domain.com
+```
+
 ### Renewal
 
 Renew certificates with the renewal script (`renewal.py`):

@@ -135,6 +135,23 @@ $ sudo docker-compose run --rm app obtain -d x.example.com y.example.com --cert 
 $ sudo python ./bin/obtain.py -d x.example.com y.example.com --cert xny.example.com
 ```
 
+如果你的域名提供商不支持 DNS API, 或者你担心暴露主要域名的 ACCESS TOKEN 会带来安全问题，这时候你可以使用 DNS alias 模式，如：
+
+```
+# 容器方式
+$ sudo docker-compose run --rm app obtain -d x.main_domain.com y.main_domain.com --dns qcloud --challenge-alias alias_domain.com
+
+# 非容器方式
+$ sudo python ./bin/obtain.py -d x.main_domain.com y.main_domain.com --dns qcloud --challenge-alias alias_domain.com
+```
+
+执行上面的命令，Let's Certbot 对 `x.main_domain.com` 和 `y.main_domain.com` 域名验证转移到 `alias_domain.com` 上，并通过 `qcloud` API 为 `alias_domain.com` 域名生成验证的 TXT DNS 记录。为此你需要**提前**为待验证的域名添加 CNAME 记录，如：
+
+```
+_acme-challenge.x.main_domain.com => _acme-challenge.alias_domain.com
+_acme-challenge.y.main_domain.com => _acme-challenge.alias_domain.com
+```
+
 ### 续期证书
 
 使用 renewal 脚本 (`renewal.py`) 为证书续期:
