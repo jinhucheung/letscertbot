@@ -8,8 +8,6 @@ from .config import Config
 
 root_path = os.path.sep.join([os.path.split(os.path.realpath(__file__))[0], '..'])
 
-Logger = logging.getLogger('logger')
-
 if Config['log'].get('enable', False):
     logfile = Config['log'].get('logfile', None) or './log/application.log'
     if not logfile.startswith('/'):
@@ -21,3 +19,7 @@ if Config['log'].get('enable', False):
         filename=logfile,
         filemode='a'
     )
+else:
+    logging.basicConfig()
+
+Logger = logging.getLogger('logger')
