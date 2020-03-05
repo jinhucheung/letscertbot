@@ -46,13 +46,15 @@ class HuaweiCloud:
                 'ttl'       : '1'
             })
         else:
-            response=self.__request('GET','/v2.1/zones/%s/recordsets/%s' % (zone_id,recordset_id))
+            recordset_path = '/v2.1/zones/%s/recordsets/%s' % (zone_id, recordset_id)
+            response = self.__request('GET', recordset_path)
             content = json.loads(response)
-            record_list=content['records']
-            record_list.append("\""+value+"\"")
-            self.__request('PUT', '/v2.1/zones/%s/recordsets/%s' % (zone_id,recordset_id), {
+            record_list = content['records']
+            record_list.append("\"" + value + "\"")
+            self.__request('PUT', recordset_path, {
                 'records'   : record_list
             })
+
     # @example huaweicloud.delete_domain_record("example.com", "_acme-challenge", "TXT")
     def delete_domain_record(self, domain, rr, value, _type = 'TXT'):
         zone_id = self.get_domain_zone_id(domain)
@@ -60,15 +62,16 @@ class HuaweiCloud:
 
         if not (zone_id and recordset_id):
             return
-        
-        response=self.__request('GET','/v2.1/zones/%s/recordsets/%s' % (zone_id,recordset_id))
+
+        recordset_path = '/v2.1/zones/%s/recordsets/%s' % (zone_id, recordset_id)
+        response = self.__request('GET', recordset_path)
         content = json.loads(response)
-        record_list=content['records']
-        if len(record_list)==1:
-            self.__request('DELETE', '/v2.1/zones/%s/recordsets/%s' % (zone_id, recordset_id))
+        record_list = content['records']
+        if len(record_list) == 1:
+            self.__request('DELETE', recordset_path)
         else:
-            record_list.remove("\""+value+"\"")
-            self.__request('PUT', '/v2.1/zones/%s/recordsets/%s' % (zone_id,recordset_id), {
+            record_list.remove("\"" + value + "\"")
+            self.__request('PUT', recordset_path, {
                 'records'   : record_list
             })
 
