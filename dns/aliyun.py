@@ -112,7 +112,7 @@ class Aliyun:
 
     def __percent_encode(self, string):
         if sys.version_info <(3,0):
-            res = urllib.quote(string.decode(sys.stdin.encoding).encode('utf8'), '')
+            res = urllib.quote(string.decode('utf8').encode('utf8'), '')
         else:
             res = urllib.quote(string.encode('utf8'))
         res = res.replace('+', '%20')
