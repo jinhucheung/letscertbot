@@ -14,6 +14,7 @@ Supports domain name registrar at persent:
 - [Tencent Cloud](https://cloud.tencent.com/)
 - [Huawei Cloud](https://www.huaweicloud.com/)
 - [GoDaddy](https://godaddy.com)
+- [Cloudflare](https://www.cloudflare.com/)
 
 ## Example
 
@@ -83,8 +84,9 @@ Before running Let's Certbot, you have the following configuration to change:
 | dns.wait_time               | false    | dns challenge wait time (seconds)                                                    | 20                    |
 | dns.aliyun                  | false    | Access Key Id and Access Key Secret of Aliyun account                                |                       |
 | dns.qcloud                  | false    | Secret Id and Secret Key of Tencent Cloud account                                    |                       |
-| dns.godaddy                 | false    | API Key and API Secret of GoDaddy account                                            |                       |
 | dns.huaweicloud             | false    | Access Key Id and Secret Access Key of Huawei Cloud account                          |                       |
+| dns.godaddy                 | false    | API Key and API Secret of GoDaddy account                                            |                       |
+| dns.cloudflare              | false    | API Key or API Token of Cloudflare account                                           |                       |
 | log.enable                  | false    | Whether to enable log tracker                                                        | false                 |
 | log.logfile                 | false    | The path of log file                                                                 | ./log/application.log |
 | deploy.servers              | false    | The deployment servers                                                               |                       |

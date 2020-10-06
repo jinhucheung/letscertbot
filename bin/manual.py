@@ -47,6 +47,7 @@ def cleanup(dns_type = 'aliyun', aliased_domain = None):
             raise Exception('Environment variable CERTBOT_DOMAIN is empty.')
 
         certbot_domain = aliased_domain or os.environ['CERTBOT_DOMAIN']
+        certbot_validation = os.environ['CERTBOT_VALIDATION']
 
         Logger.info('manual#cleanup: Start to cleanup dns')
         Logger.info('manual#cleanup: ' + certbot_domain)
@@ -54,7 +55,7 @@ def cleanup(dns_type = 'aliyun', aliased_domain = None):
         maindomain, acme_challenge = __extract_maindomain_and_challenge(certbot_domain)
 
         client = __get_dns_client(dns_type)
-        client.delete_domain_record(maindomain, acme_challenge)
+        client.delete_domain_record(maindomain, acme_challenge, certbot_validation)
 
         Logger.info('manual#cleanup: Success.')
     except Exception as e:
@@ -77,7 +78,7 @@ def test(domain, dns_type = 'aliyun'):
         time.sleep(__get_wait_time())
 
         print('remove above TXT record')
-        client.delete_domain_record(maindomain, acme_challenge)
+        client.delete_domain_record(maindomain, acme_challenge, validation)
         print('removed TXT record')
 
         print('tested ' + domain + ' in DNS ' + dns_type + ' API')
@@ -97,6 +98,8 @@ def __get_dns_client(dns_type = 'aliyun'):
             return dns.GoDaddy(data['api_key'], data['api_secret'])
         elif 'huaweicloud' == dns_type:
             return dns.HuaweiCloud(data['access_key_id'], data['secret_access_key'])
+        elif 'cloudflare' == dns_type:
+            return dns.Cloudflare(data['email'], data['api_key'], data['api_token'])
         raise KeyError(dns_type)
     except KeyError as e:
         print('The ' + dns_type + ' DNS API is not be supported at persent')
@@ -128,7 +131,7 @@ def main():
     parser.add_argument('-a', '--auth', help='auth hook', action='store_true')
     parser.add_argument('-c', '--cleanup', help='cleanup hook', action='store_true')
     parser.add_argument('-t', '--test', help='test DNS API', action='store_true')
-    parser.add_argument('--dns', help='dns type, default: aliyun', default='aliyun')
+    parser.add_argument('--dns', help='dns type, default: aliyun', default='aliyun', choices=dns.types)
     parser.add_argument('-d', '--domain', help='a domain for test DNS API')
     parser.add_argument('--challenge-alias', dest='alias', help='challenge aliased domain, e.g. alias.domain.com')
 

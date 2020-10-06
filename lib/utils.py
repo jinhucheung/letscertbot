@@ -25,6 +25,10 @@ def extract_domain(domain):
 
     return ('', domain)
 
+def guess_domain_names(domain):
+    fragments = domain.split('.')
+    return ['.'.join(fragments[i:]) for i in range(0, len(fragments))]
+
 def is_enable_deployment():
     try:
         deploy = Config.get('deploy', {})

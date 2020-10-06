@@ -8,7 +8,6 @@ import urllib
 import base64
 import hashlib
 import hmac
-import logging
 import json
 
 if sys.version_info < (3,0):
@@ -43,8 +42,8 @@ class Qcloud:
         }
         self.__request(params)
 
-    # @example qcloud.delete_domain_record("example.com", "_acme-challenge", "TXT")
-    def delete_domain_record(self, domain, rr, _type = 'TXT'):
+    # @example qcloud.delete_domain_record("example.com", "_acme-challenge", "123456")
+    def delete_domain_record(self, domain, rr, value, _type = 'TXT'):
         result = self.get_domain_records(domain, rr, _type)
         result = json.loads(result)
 
@@ -131,7 +130,7 @@ class Qcloud:
 
 if __name__ == '__main__':
     Logger.info('开始调用腾讯云 DNS API')
-    Logger.info('-'.join(sys.argv))
+    Logger.info(' '.join(sys.argv))
 
     _, action, certbot_domain, acme_challenge, certbot_validation, secret_id, secret_key = sys.argv
 
@@ -140,6 +139,6 @@ if __name__ == '__main__':
     if 'add' == action:
         qcloud.add_domain_record(certbot_domain, acme_challenge, certbot_validation)
     elif 'delete' == action:
-        qcloud.delete_domain_record(certbot_domain, acme_challenge)
+        qcloud.delete_domain_record(certbot_domain, acme_challenge, certbot_validation)
 
     Logger.info('结束调用腾讯云 DNS API')

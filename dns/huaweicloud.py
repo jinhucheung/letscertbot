@@ -9,7 +9,6 @@ import hashlib
 import hmac
 import binascii
 import json
-import logging
 
 if sys.version_info < (3, 0):
     import urllib2
@@ -55,7 +54,7 @@ class HuaweiCloud:
                 'records'   : record_list
             })
 
-    # @example huaweicloud.delete_domain_record("example.com", "_acme-challenge", "TXT")
+    # @example huaweicloud.delete_domain_record("example.com", "_acme-challenge", "123456")
     def delete_domain_record(self, domain, rr, value, _type = 'TXT'):
         zone_id = self.get_domain_zone_id(domain)
         recordset_id = self.get_domain_recordset_id(domain, rr, _type)
@@ -81,20 +80,22 @@ class HuaweiCloud:
             full_domain = '.'.join([rr, domain])
             response = self.__request('GET', '/v2.1/recordsets?type=%s&name=%s' % (_type, full_domain))
             content = json.loads(response)
-            return list(filter(lambda record: record['name'][:-1] == full_domain and record['type'] == _type, content['recordsets']))[0]
+            if content['recordsets']:
+                return list(filter(lambda record: record['name'][:-1] == full_domain and record['type'] == _type, content['recordsets']))[0]
         except Exception as e:
             Logger.error('huaweicloud#get_domain_record raise: ' + str(e))
-            return None
+        return None
 
     # @example huaweicloud.get_domain("example.com")
     def get_domain(self, domain):
         try:
             response = self.__request('GET', '/v2/zones?type=public&name=%s' % (domain))
             content = json.loads(response)
-            return list(filter(lambda item: item['name'][:-1] == domain, content['zones']))[0]
+            if content['zones']:
+                return list(filter(lambda item: item['name'][:-1] == domain, content['zones']))[0]
         except Exception as e:
             Logger.error('huaweicloud#get_domain raise: ' + str(e))
-            return None
+        return None
 
     def get_domain_recordset_id(self, domain, rr, _type = 'TXT'):
         try:
@@ -225,7 +226,7 @@ class HuaweiCloud:
 
 if __name__ == '__main__':
     Logger.info('开始调用华为云 DNS API')
-    Logger.info('-'.join(sys.argv))
+    Logger.info(' '.join(sys.argv))
 
     _, action, certbot_domain, acme_challenge, certbot_validation, api_key, api_secret = sys.argv
 
