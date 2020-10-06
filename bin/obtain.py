@@ -8,6 +8,7 @@ import argparse
 root_path = os.path.sep.join([os.path.split(os.path.realpath(__file__))[0], '..'])
 
 sys.path.append(root_path)
+from dns import types as dns_types
 from lib import Config, Logger, Utils
 
 manual_path = os.path.sep.join([root_path, 'bin', 'manual.py'])
@@ -62,7 +63,7 @@ def main():
     parser.add_argument('-d', '--domains', help='domain list', required=True, nargs='+')
     parser.add_argument('-c', '--cert', help='certificate name, e.g. domain.com')
     parser.add_argument('-f', '--force', help='force renewal', default=False, action='store_true')
-    parser.add_argument('--dns', help='dns type, default: aliyun', default='aliyun', choices=dns.types)
+    parser.add_argument('--dns', help='dns type, default: aliyun', default='aliyun', choices=dns_types)
     parser.add_argument('--challenge-alias', dest='alias', help='challenge aliased domain, e.g. alias.domain.com')
 
     args = parser.parse_args()
