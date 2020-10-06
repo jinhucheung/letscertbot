@@ -8,7 +8,6 @@ import urllib
 import base64
 import hashlib
 import hmac
-import logging
 
 if sys.version_info < (3,0):
     import urllib2
@@ -40,8 +39,8 @@ class Aliyun:
         }
         self.__request(params)
 
-    # @example aliyun.delete_domain_record("example.com", "_acme-challenge", "TXT")
-    def delete_domain_record(self, domain, rr, _type = 'TXT'):
+    # @example aliyun.delete_domain_record("example.com", "_acme-challenge", "123456")
+    def delete_domain_record(self, domain, rr, value, _type = 'TXT'):
         params = {
             'Action'     : 'DeleteSubDomainRecords',
             'DomainName' : domain,
@@ -125,7 +124,7 @@ class Aliyun:
 
 if __name__ == '__main__':
     Logger.info('开始调用阿里云 DNS API')
-    Logger.info('-'.join(sys.argv))
+    Logger.info(' '.join(sys.argv))
 
     _, action, certbot_domain, acme_challenge, certbot_validation, access_key_id, access_key_secret = sys.argv
 
@@ -134,6 +133,6 @@ if __name__ == '__main__':
     if 'add' == action:
         aliyun.add_domain_record(certbot_domain, acme_challenge, certbot_validation)
     elif 'delete' == action:
-        aliyun.delete_domain_record(certbot_domain, acme_challenge)
+        aliyun.delete_domain_record(certbot_domain, acme_challenge, certbot_validation)
 
     Logger.info('结束调用阿里云 DNS API')

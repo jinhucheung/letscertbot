@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.3.6](https://github.com/jinhucheung/letscertbot/tree/v0.3.6) (2020-10-06)
+
+[Full Changelog](https://github.com/jinhucheung/letscertbot/compare/v0.3.5..v0.3.6)
+
+**Implemented enhancements:**
+
+- Add Cloudflare DNS support [\#27](https://github.com/jinhucheung/letscertbot/pull/27)
+
 ## [v0.3.5](https://github.com/jinhucheung/letscertbot/tree/v0.3.5) (2020-02-16)
 
 [Full Changelog](https://github.com/jinhucheung/letscertbot/compare/v0.3.4..v0.3.5)

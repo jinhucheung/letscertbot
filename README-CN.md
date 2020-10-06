@@ -12,6 +12,7 @@ Let's Certbot 是一个基于 [Certbot](https://certbot.eff.org/) 用于自动�
 - [腾讯云](https://cloud.tencent.com/)
 - [华为云](https://www.huaweicloud.com/)
 - [GoDaddy](https://godaddy.com)
+- [Cloudflare](https://www.cloudflare.com/)
 
 ## 示例
 
@@ -81,8 +82,9 @@ $ sudo certbot --version
 | dns.wait_time               | false | dns 验证等待时间(秒)                                               | 20                    |
 | dns.aliyun                  | false | 阿里云帐号的 Access Key Id 和 Access Key Secret                    |                       |
 | dns.qcloud                  | false | 腾讯云帐号的 Secret Id 和 Secret Key                               |                       |
-| dns.godaddy                 | false | GoDaddy 帐号的 API Key 和 API Secret                               |                       |
 | dns.huaweicloud             | false | 华为云帐号的 Access Key Id 和 Secret Access Key                    |                       |
+| dns.godaddy                 | false | GoDaddy 帐号的 API Key 和 API Secret                               |                       |
+| dns.cloudflare              | false | Cloudflare 帐号的 API Key 或者 API Token                           |                       |
 | log.enable                  | false | 是否启用日志跟踪                                                   | false                 |
 | log.logfile                 | false | 日志文件路径                                                       | ./log/application.log |
 | deploy.servers              | false | 部署服务器列表                                                     |                       |

@@ -5,7 +5,6 @@ import sys
 import os
 import urllib
 import json
-import logging
 
 if sys.version_info < (3,0):
     import urllib2
@@ -39,9 +38,9 @@ class GoDaddy:
 
         self.__request('PATCH', path, payload)
 
-    # @example godaddy.delete_domain_record("example.com", "_acme-challenge", "TXT")
+    # @example godaddy.delete_domain_record("example.com", "_acme-challenge", "123456")
     # @link https://developer.godaddy.com/doc/endpoint/domains#/
-    def delete_domain_record(self, domain, rr, _type = 'TXT'):
+    def delete_domain_record(self, domain, rr, value, _type = 'TXT'):
         '''
         Godaddy DNS API does not support deleting domain record
         '''
@@ -82,7 +81,7 @@ class GoDaddy:
 
 if __name__ == '__main__':
     Logger.info('开始调用 Godaddy DNS API')
-    Logger.info('-'.join(sys.argv))
+    Logger.info(' '.join(sys.argv))
 
     _, action, certbot_domain, acme_challenge, certbot_validation, api_key, api_secret = sys.argv
 
@@ -91,7 +90,7 @@ if __name__ == '__main__':
     if 'add' == action:
         godaddy.add_domain_record(certbot_domain, acme_challenge, certbot_validation)
     elif 'delete' == action:
-        godaddy.delete_domain_record(certbot_domain, acme_challenge)
+        godaddy.delete_domain_record(certbot_domain, acme_challenge, certbot_validation)
     elif 'get' == action:
         godaddy.get_domain_record(certbot_domain, acme_challenge)
 
